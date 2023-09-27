@@ -2,15 +2,17 @@ import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import '../screens/home_page.dart';
 
 class HomeLayout extends StatefulWidget {
-  const HomeLayout({Key? key, required this.controller}) : super(key: key);
+  const HomeLayout(
+      {Key? key, required this.controller, required this.taskCount})
+      : super(key: key);
 
   final HomeController controller;
+  final int taskCount;
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -22,36 +24,37 @@ class _HomeLayoutState extends State<HomeLayout> {
   late IndicatorType _indicatorType;
   late double _starsOpacity = 0.0;
 
-  late Box<Task> taskBox;
+  late VoidCallback _listener;
 
   @override
   void initState() {
-    widget.controller.addListener(() {
+    _listener = () {
       readController();
-    });
+    };
+    widget.controller.addListener(_listener);
     readController();
-    openTaskBox();
+    _tasksString = "";
+    setTasksStatus();
 
-    _tasksString = "Counting your to-do's for today";
+    // _tasksString = "Counting your to-do's for today";
 
     super.initState();
   }
 
-  Future<void> openTaskBox() async {
-    taskBox = await Hive.openBox<Task>('tasksBox');
-    var tasksForToday = taskBox.values.where((element) {
-      return element.dateTime.isAfter(DateTime.now()) ||
-          (element.dateTime.day == DateTime.now().day &&
-              element.dateTime.month == DateTime.now().month &&
-              element.dateTime.year == DateTime.now().year);
-    }).toList();
+  @override
+  void dispose() {
+    widget.controller.removeListener(_listener);
+    super.dispose();
+  }
+
+  void setTasksStatus() {
     setState(() {
-      if (tasksForToday.isEmpty) {
-        _tasksString = "You have no to-do's for today";
-      } else if (tasksForToday.length == 1) {
+      if (widget.taskCount == 0) {
+        _tasksString = "You completed all tasks today";
+      } else if (widget.taskCount == 1) {
         _tasksString = "You have 1 to-do for today";
       } else {
-        _tasksString = "You have ${tasksForToday.length} to-do's for today";
+        _tasksString = "You have ${widget.taskCount} to-do's for today";
       }
     });
   }
@@ -121,11 +124,5 @@ class _HomeLayoutState extends State<HomeLayout> {
         )
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    taskBox.close(); // Close the box when it's no longer needed
-    super.dispose();
   }
 }

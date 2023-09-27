@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:daily_planner/components/edit_new_page_layout.dart';
+import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import '../components/home_layout.dart';
@@ -33,7 +35,10 @@ class _HomePageState extends State<HomePage> {
 
   late HomeController _controller;
 
-  bool _isEditing = true;
+  bool _isEditing = false;
+
+  late Box<Task> _taskBox;
+  late List<Task> _tasks;
 
   @override
   void initState() {
@@ -48,8 +53,28 @@ class _HomePageState extends State<HomePage> {
     //     _calculateTimeVariables();
     //   });
     // });
-
+    _tasks = [];
+    _updateTasks();
     super.initState();
+  }
+
+  Future<void> _updateTasks() async {
+    _taskBox = await Hive.openBox<Task>('tasksBox');
+    var tasksForToday = _taskBox.values.where((element) {
+      return element.dateTime.isAfter(DateTime.now()) ||
+          (element.dateTime.day == DateTime.now().day &&
+              element.dateTime.month == DateTime.now().month &&
+              element.dateTime.year == DateTime.now().year);
+    }).toList();
+    setState(() {
+      _tasks = tasksForToday;
+    });
+  }
+
+  @override
+  void dispose() {
+    _taskBox.close(); // Close the box when it's no longer needed
+    super.dispose();
   }
 
   void _toggleEditting() {
@@ -130,7 +155,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _toggleEditting();
+        },
+        backgroundColor: _currentButtonColor,
+        child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: _isEditing
+          ? FloatingActionButtonLocation.endFloat
+          : FloatingActionButtonLocation.centerFloat,
       body: Stack(
         children: [
           Container(
@@ -138,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             height: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: const Alignment(-0.00, -1.00),
+                begin: const Alignment(0, 0),
                 end: const Alignment(0, 1),
                 colors: [_currentColor, Colors.black.withOpacity(0.51)],
               ),
@@ -147,31 +183,39 @@ class _HomePageState extends State<HomePage> {
           Column(
             children: [
               Container(
+                alignment: Alignment.center,
                 margin: const EdgeInsets.only(top: 41),
                 child: Text(_timeString, style: MyTextStyles.homeMainStyle),
               ),
-              if (!_isEditing) HomeLayout(controller: _controller),
-              Expanded(
-                child: Container(
-                  margin: _isEditing ?
-                    const EdgeInsets.only(top: 35) : 
-                    const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const ShapeDecoration(
-                    color: Color(0x49F2F2F3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
-                      ),
-                    ),
+              if (!_isEditing)
+                HomeLayout(
+                  controller: _controller,
+                  taskCount: _tasks.length,
+                ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              height: _isEditing ? screenHeight * 0.87 : screenHeight * 0.61,
+              margin: _isEditing
+                  ? const EdgeInsets.only(top: 35)
+                  : const EdgeInsets.only(top: 10),
+              width: MediaQuery.of(context).size.width,
+              decoration: const ShapeDecoration(
+                color: Color(0x49F2F2F3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
                   ),
-                  child: _isEditing
-                      ? EditNewPageLayout()
-                      : TaskLayout(currentButtonColor: _currentButtonColor),
                 ),
               ),
-            ],
+              child: _isEditing
+                  ? const SingleChildScrollView(child: EditNewPageLayout())
+                  : TaskLayout(tasks: _tasks),
+            ),
           ),
         ],
       ),

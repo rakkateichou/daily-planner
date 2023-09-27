@@ -38,7 +38,7 @@ to send a text me
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 141,
               height: 72,
               child: Text(
@@ -46,16 +46,21 @@ to send a text me
                 style: MyTextStyles.taskEditingStyle,
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-              decoration: BoxDecoration(color: const Color(0xCCF2F2F3)),
-              child: SizedBox(
-                width: 200,
-                height: 25,
-                child: Text(
-                  "12:00 PM today",
-                  textAlign: TextAlign.center,
-                  style: MyTextStyles.taskEditingStyle,
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                decoration: BoxDecoration(color: const Color(0xCCF2F2F3)),
+                child: SizedBox(
+                  width: 200,
+                  height: 25,
+                  child: Text(
+                    "12:00 PM today",
+                    textAlign: TextAlign.center,
+                    style: MyTextStyles.taskEditingStyle,
+                  ),
                 ),
               ),
             )

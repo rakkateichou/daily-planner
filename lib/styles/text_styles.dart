@@ -25,4 +25,10 @@ class MyTextStyles {
     fontSize: 20,
     fontWeight: FontWeight.w400,
   );
+
+  static const TextStyle addNewTaskStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 32,
+    fontWeight: FontWeight.w400,
+  );
 }

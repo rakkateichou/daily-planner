@@ -1,8 +1,12 @@
+import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TaskItem extends StatefulWidget {
-  const TaskItem({Key? key}) : super(key: key);
+  const TaskItem({Key? key, required this.task}) : super(key: key);
+
+  final Task task;
 
   @override
   _TaskItemState createState() => _TaskItemState();
@@ -11,12 +15,15 @@ class TaskItem extends StatefulWidget {
 class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
+    
+    var time = DateFormat.jm().format(widget.task.dateTime);
+
     return Container(
       height: 116,
       margin: const EdgeInsets.only(bottom: 20, left: 6),
       child: Row(
         children: [
-          Text("12:00pm", style: MyTextStyles.taskTimeStyle),
+          Text(time, style: MyTextStyles.taskTimeStyle),
           Container(
             margin: const EdgeInsets.only(left: 4),
             width: MediaQuery.of(context).size.width - 85,
