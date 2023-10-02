@@ -36,10 +36,10 @@ class _SunMoonIndicatorState extends State<SunMoonIndicator> {
   }
 
   _loadSvg() async {
-    var mpi = await vg.loadPicture(const SvgAssetLoader('moon_dots.svg'),
+    var mpi = await vg.loadPicture(const SvgAssetLoader('assets/moon_dots.svg'),
         null); // TODO: make it native maybe ?
-    var spi = await vg.loadPicture(const SvgAssetLoader('stars.svg'), null);
-    // var cpi = await vg.loadPicture(const SvgAssetLoader('cloud.svg'), null);
+    var spi = await vg.loadPicture(const SvgAssetLoader('assets/stars.svg'), null);
+    // var cpi = await vg.loadPicture(const SvgAssetLoader('assets/cloud.svg'), null);
     setState(() {
       moonDotsPI = mpi;
       starsPI = spi;

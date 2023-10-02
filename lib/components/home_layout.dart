@@ -1,8 +1,6 @@
 import 'package:daily_planner/components/sun_moon_indicator.dart';
-import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../screens/home_page.dart';
 
@@ -107,7 +105,7 @@ class _HomeLayoutState extends State<HomeLayout> {
     return Column(
       children: [
         SizedBox(
-          height: 110,
+          height: 180,
           child: SunMoonIndicator(
             position: _objectPosition,
             indicatorType: _indicatorType,

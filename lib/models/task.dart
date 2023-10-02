@@ -11,5 +11,5 @@ class Task extends HiveObject {
   @HiveField(2)
   DateTime dateTime; // Date and time for the task
 
-  Task(this.id, this.content, this.dateTime);
+  Task({required this.id, required this.content, required this.dateTime});
 }

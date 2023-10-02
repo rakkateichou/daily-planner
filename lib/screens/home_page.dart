@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:daily_planner/components/edit_new_page_layout.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
+import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -83,6 +84,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _writeTaskToHive(Task task) async {
+    await _taskBox.add(task);
+    _updateTasks();
+  }
+
   String _formatDateTime(DateTime dateTime) {
     return DateFormat.jm().format(dateTime);
   }
@@ -97,6 +103,7 @@ class _HomePageState extends State<HomePage> {
     var now = _controller.now;
     var cc = Colors.white;
     var cbc = Colors.white;
+    var interpolateColor = Utils.interpolateColor;
     if (now.hour >= 6 && now.hour < 12) {
       cc = interpolateColor(morningColor, dayColor, now.hour / 12);
       cbc = interpolateColor(morningButtonColor, dayButtonColor, now.hour / 12);
@@ -130,29 +137,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Color interpolateColor(Color startColor, Color endColor, double t) {
-    // Ensure t is within the [0, 1] range
-    t = t.clamp(0.0, 1.0);
-
-    // Extract the red, green, and blue components of the start and end colors
-    final startRed = startColor.red;
-    final startGreen = startColor.green;
-    final startBlue = startColor.blue;
-    final endRed = endColor.red;
-    final endGreen = endColor.green;
-    final endBlue = endColor.blue;
-
-    // Calculate the interpolated color
-    final interpolatedColor = Color.fromARGB(
-      (startColor.alpha + (endColor.alpha - startColor.alpha) * t).round(),
-      (startRed + (endRed - startRed) * t).round(),
-      (startGreen + (endGreen - startGreen) * t).round(),
-      (startBlue + (endBlue - startBlue) * t).round(),
-    );
-
-    return interpolatedColor;
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -164,6 +148,20 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: _currentButtonColor,
         child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
       ),
+      appBar: AppBar(
+        toolbarHeight: 83,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/calendar');
+            },
+            icon: const Icon(Icons.calendar_month),
+          ),
+        ],
+      ),
+      extendBodyBehindAppBar: true,
       floatingActionButtonLocation: _isEditing
           ? FloatingActionButtonLocation.endFloat
           : FloatingActionButtonLocation.centerFloat,
@@ -180,17 +178,22 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Column(
+          Stack(
             children: [
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(top: 41),
-                child: Text(_timeString, style: MyTextStyles.homeMainStyle),
+              Positioned(
+                top: 41,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.center,
+                  child: Text(_timeString, style: MyTextStyles.homeMainStyle),
+                ),
               ),
               if (!_isEditing)
-                HomeLayout(
-                  controller: _controller,
-                  taskCount: _tasks.length,
+                Container(
+                  child: HomeLayout(
+                    controller: _controller,
+                    taskCount: _tasks.length,
+                  ),
                 ),
             ],
           ),
@@ -204,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                   : const EdgeInsets.only(top: 10),
               width: MediaQuery.of(context).size.width,
               decoration: const ShapeDecoration(
-                color: Color(0x49F2F2F3),
+                color: Color.fromRGBO(242, 242, 243, 0.4),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
@@ -213,7 +216,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               child: _isEditing
-                  ? const SingleChildScrollView(child: EditNewPageLayout())
+                  ? SingleChildScrollView(
+                      padding: EdgeInsets.only(bottom: 56 + 32),
+                      child: EditNewPageLayout(taskCallback: (task) {
+                        print(task.content);
+                      }))
                   : TaskLayout(tasks: _tasks),
             ),
           ),
@@ -225,7 +232,6 @@ class _HomePageState extends State<HomePage> {
 
 class HomeController extends ChangeNotifier {
   DateTime _now = DateTime.now();
-
   DateTime get now => _now;
 
   void updateDateTime(DateTime newDateTime) {
