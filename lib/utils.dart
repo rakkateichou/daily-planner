@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:daily_planner/models/task.dart';
+
 class Utils {
   static Color interpolateColor(Color startColor, Color endColor, double t) {
     // Ensure t is within the [0, 1] range
@@ -22,5 +24,26 @@ class Utils {
     );
 
     return interpolatedColor;
+  }
+
+  static List<double> calculateOffsetsFromTasks(List<Task> tasks) {
+    List<double> offsets = [];
+    tasks.forEach((element) {
+      var offset = getObjectPosition(element.dateTime);
+      offsets.add(offset);
+    });
+    return offsets;
+  }
+
+  static double getObjectPosition(DateTime now) {
+    var op = 0.0;
+    // minutes from the start of the day
+    final int minutes = now.hour * 60 + now.minute;
+    if (minutes > 5 * 60) {
+      op = (minutes - 300) / 1140 * 0.9;
+    } else {
+      op = (minutes / 300) * 0.1 + 0.9;
+    }
+    return op;
   }
 }

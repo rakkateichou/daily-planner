@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:daily_planner/components/edit_new_page_layout.dart';
+import 'package:daily_planner/models/calendar_arguments.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
@@ -38,8 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   bool _isEditing = false;
 
-  late Box<Task> _taskBox;
-  late List<Task> _tasks;
+  late Task _lastTaskSaved;
 
   @override
   void initState() {
@@ -54,27 +54,15 @@ class _HomePageState extends State<HomePage> {
     //     _calculateTimeVariables();
     //   });
     // });
-    _tasks = [];
-    _updateTasks();
+    _controller.fetchTasks();
+    _lastTaskSaved =
+        Task(id: 0, content: "Dummy Task", dateTime: DateTime.now());
     super.initState();
-  }
-
-  Future<void> _updateTasks() async {
-    _taskBox = await Hive.openBox<Task>('tasksBox');
-    var tasksForToday = _taskBox.values.where((element) {
-      return element.dateTime.isAfter(DateTime.now()) ||
-          (element.dateTime.day == DateTime.now().day &&
-              element.dateTime.month == DateTime.now().month &&
-              element.dateTime.year == DateTime.now().year);
-    }).toList();
-    setState(() {
-      _tasks = tasksForToday;
-    });
   }
 
   @override
   void dispose() {
-    _taskBox.close(); // Close the box when it's no longer needed
+    _controller._taskBox.close(); // Close the box when it's no longer needed
     super.dispose();
   }
 
@@ -82,11 +70,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isEditing = !_isEditing;
     });
-  }
-
-  void _writeTaskToHive(Task task) async {
-    await _taskBox.add(task);
-    _updateTasks();
   }
 
   String _formatDateTime(DateTime dateTime) {
@@ -143,24 +126,32 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          if (_isEditing) {
+            _controller.addTask(_lastTaskSaved);
+          }
           _toggleEditting();
         },
         backgroundColor: _currentButtonColor,
         child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
       ),
-      appBar: AppBar(
-        toolbarHeight: 83,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/calendar');
-            },
-            icon: const Icon(Icons.calendar_month),
-          ),
-        ],
-      ),
+      appBar: MediaQuery.of(context).viewInsets.bottom < 100
+          ? AppBar(
+              toolbarHeight: 83,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Text(_timeString, style: MyTextStyles.homeMainStyle),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/calendar',
+                        arguments: CalendarArguments(_currentColor));
+                  },
+                  icon: const Icon(Icons.calendar_month),
+                ),
+              ],
+            )
+          : null,
       extendBodyBehindAppBar: true,
       floatingActionButtonLocation: _isEditing
           ? FloatingActionButtonLocation.endFloat
@@ -180,19 +171,10 @@ class _HomePageState extends State<HomePage> {
           ),
           Stack(
             children: [
-              Positioned(
-                top: 41,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  alignment: Alignment.center,
-                  child: Text(_timeString, style: MyTextStyles.homeMainStyle),
-                ),
-              ),
               if (!_isEditing)
                 Container(
                   child: HomeLayout(
                     controller: _controller,
-                    taskCount: _tasks.length,
                   ),
                 ),
             ],
@@ -201,7 +183,10 @@ class _HomePageState extends State<HomePage> {
             bottom: 0,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 500),
-              height: _isEditing ? screenHeight * 0.87 : screenHeight * 0.61,
+              height: _isEditing
+                  ? (screenHeight - MediaQuery.of(context).viewInsets.bottom) *
+                      0.87
+                  : screenHeight * 0.61,
               margin: _isEditing
                   ? const EdgeInsets.only(top: 35)
                   : const EdgeInsets.only(top: 10),
@@ -217,11 +202,15 @@ class _HomePageState extends State<HomePage> {
               ),
               child: _isEditing
                   ? SingleChildScrollView(
-                      padding: EdgeInsets.only(bottom: 56 + 32),
-                      child: EditNewPageLayout(taskCallback: (task) {
-                        print(task.content);
-                      }))
-                  : TaskLayout(tasks: _tasks),
+                      padding: const EdgeInsets.only(bottom: 56 + 25),
+                      reverse: true,
+                      child: EditNewPageLayout(
+                        taskCallback: (task) {
+                          _lastTaskSaved = task;
+                        },
+                        popCallback: () => _toggleEditting(),
+                      ))
+                  : TaskLayout(controller: _controller),
             ),
           ),
         ],
@@ -230,9 +219,49 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// TODO: split it into time controller and task controller later
 class HomeController extends ChangeNotifier {
   DateTime _now = DateTime.now();
   DateTime get now => _now;
+
+  List<Task> _tasks = [];
+  List<Task> get tasks => _tasks;
+
+  final Box<Task> _taskBox;
+  Box<Task> get taskBox => _taskBox;
+
+  HomeController() : _taskBox = Hive.box<Task>('tasks');
+
+  void addTask(Task task) {
+    _tasks.add(task);
+    _taskBox.put(task.id, task);
+    notifyListeners();
+  }
+
+  void removeTask(Task task) {
+    _tasks.remove(task);
+    print(task.id);
+    _taskBox.delete(task.id);
+    notifyListeners();
+  }
+
+  Future<void> fetchTasks() async {
+    // // this is for today but only after current time
+    // var tasksForToday = _taskBox.values.where((element) {
+    //   return element.dateTime.isAfter(DateTime.now()) ||
+    //       (element.dateTime.day == DateTime.now().day &&
+    //           element.dateTime.month == DateTime.now().month &&
+    //           element.dateTime.year == DateTime.now().year);
+    // }).toList();
+
+    var tasksForToday = _taskBox.values.where((element) {
+      return element.dateTime.day == DateTime.now().day &&
+          element.dateTime.month == DateTime.now().month &&
+          element.dateTime.year == DateTime.now().year;
+    }).toList();
+    _tasks = tasksForToday;
+    notifyListeners();
+  }
 
   void updateDateTime(DateTime newDateTime) {
     _now = newDateTime;

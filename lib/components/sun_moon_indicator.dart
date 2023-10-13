@@ -10,7 +10,7 @@ class SunMoonIndicator extends StatefulWidget {
       required this.position,
       this.indicatorType = IndicatorType.sun,
       this.starsOpacity = 0.0,
-      this.tasks = const [], 
+      this.tasks = const [],
       this.cloudAppearance = const (0.3, 0.5)})
       : super(key: key);
 
@@ -18,7 +18,7 @@ class SunMoonIndicator extends StatefulWidget {
   final IndicatorType indicatorType;
   final double starsOpacity;
   final List<double> tasks;
-  final (double, double) cloudAppearance; 
+  final (double, double) cloudAppearance;
 
   @override
   _SunMoonIndicatorState createState() => _SunMoonIndicatorState();
@@ -38,7 +38,8 @@ class _SunMoonIndicatorState extends State<SunMoonIndicator> {
   _loadSvg() async {
     var mpi = await vg.loadPicture(const SvgAssetLoader('assets/moon_dots.svg'),
         null); // TODO: make it native maybe ?
-    var spi = await vg.loadPicture(const SvgAssetLoader('assets/stars.svg'), null);
+    var spi =
+        await vg.loadPicture(const SvgAssetLoader('assets/stars.svg'), null);
     // var cpi = await vg.loadPicture(const SvgAssetLoader('assets/cloud.svg'), null);
     setState(() {
       moonDotsPI = mpi;
@@ -107,11 +108,24 @@ class CurvePainter extends CustomPainter {
         2 * (1 - t) * t * controlPoint.dy +
         t * t * endPoint.dy;
 
+    // draw dilimeter
+    final t2 = 0.9;
+
+    final circleX2 = (1 - t2) * (1 - t2) * startPoint.dx +
+        2 * (1 - t2) * t2 * controlPoint.dx +
+        t2 * t2 * endPoint.dx;
+    final circleY2 = (1 - t2) * (1 - t2) * startPoint.dy +
+        2 * (1 - t2) * t2 * controlPoint.dy +
+        t2 * t2 * endPoint.dy;
+
+    canvas.drawLine(Offset(circleX2 + 3, circleY2 - 4),
+        Offset(circleX2 + 8, circleY2 - 13), paint);
+
     // Draw the moving circle
     final circlePaint = Paint()
       ..color = indicatorType == IndicatorType.sun
-          ? const Color(0xFFE4DE58)
-          : const Color(0xFFD4D3CE);
+          ? const Color(0xFFFFB359)
+          : const Color(0xFFB0B0AF);
 
     // Apply a blur effect to the circle
     final blurSigma = 1.0;
@@ -133,8 +147,7 @@ class CurvePainter extends CustomPainter {
     }
 
     // Draw task dots
-    final taskPaint = Paint()
-      ..style = PaintingStyle.fill;
+    final taskPaint = Paint()..style = PaintingStyle.fill;
 
     for (var i = 0; i < taskDots.length; i++) {
       taskPaint.color = taskDots[i].dx > circleX

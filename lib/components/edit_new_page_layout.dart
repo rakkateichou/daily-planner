@@ -6,10 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class EditNewPageLayout extends StatefulWidget {
-  const EditNewPageLayout({Key? key, required this.taskCallback})
+  const EditNewPageLayout(
+      {Key? key, required this.taskCallback, required this.popCallback})
       : super(key: key);
 
   final Function(Task task) taskCallback;
+  final VoidCallback popCallback;
 
   @override
   _EditNewPageLayoutState createState() => _EditNewPageLayoutState();
@@ -24,16 +26,14 @@ class _EditNewPageLayoutState extends State<EditNewPageLayout> {
   @override
   void initState() {
     super.initState();
+    var now = DateTime.now();
     _dateTime = DateTime.now();
-    _timeText = "12:00 PM";
-    _dateText = DateFormat.yMMMMd().format(DateTime.now());
-    _controller = TextEditingController(text: '''
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-''');
+    _timeText = DateFormat.jm().format(now);
+    _dateText = DateFormat.yMMMMd().format(now);
+    _controller = TextEditingController();
+    _controller.addListener(() {
+      _callCallback();
+    });
   }
 
   void _pickTime() {
@@ -74,55 +74,55 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
   void _callCallback() {
     widget.taskCallback(Task(
-        id: DateTime.now().millisecondsSinceEpoch,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         content: _controller.text,
         dateTime: _dateTime));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-            height: 575,
-            child: NoteLikeTextField(
-              controller: _controller,
-              textCallback: () {
-                _callCallback();
-              },
-            )),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const SizedBox(
-              width: 141,
-              height: 72,
-              child: Text(
-                "What time do you want to put the task on?",
-                style: MyTextStyles.taskEditingStyle,
+    return WillPopScope(
+      onWillPop: () async {
+        widget.popCallback();
+        return false;
+      },
+      child: Column(
+        children: [
+          Container(
+              height: 575, child: NoteLikeTextField(controller: _controller)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(
+                width: 141,
+                height: 72,
+                child: Text(
+                  "What time do you want to put the task on?",
+                  style: MyTextStyles.taskEditingStyle,
+                ),
               ),
-            ),
-            Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(bottom: 3),
-                  child: GestureDetector(
-                    onTap: _pickTime,
-                    child: MyPickContainer(text: _timeText),
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 3),
+                    child: GestureDetector(
+                      onTap: _pickTime,
+                      child: MyPickContainer(text: _timeText),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 3),
-                  child: GestureDetector(
-                    onTap: _pickDate,
-                    child: MyPickContainer(text: _dateText),
+                  Container(
+                    margin: const EdgeInsets.only(top: 3),
+                    child: GestureDetector(
+                      onTap: _pickDate,
+                      child: MyPickContainer(text: _dateText),
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
-        )
-      ],
+                ],
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }
@@ -157,26 +157,23 @@ class NoteLikeTextField extends StatelessWidget {
   const NoteLikeTextField({
     super.key,
     required TextEditingController controller,
-    required this.textCallback,
   }) : _controller = controller;
 
   final TextEditingController _controller;
-  final VoidCallback textCallback;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // a text view with 22 lines underscored with a line
         Positioned(
           left: 16,
           right: 16,
           bottom: 10,
           child: TextField(
             onChanged: (value) {
-              textCallback();
+              _controller.text = value;
             },
-            maxLength: 650,
+            maxLength: 450,
             style: MyTextStyles.taskEditingStyle,
             scrollPhysics: const NeverScrollableScrollPhysics(),
             decoration: const InputDecoration(
@@ -187,13 +184,12 @@ class NoteLikeTextField extends StatelessWidget {
             strutStyle: const StrutStyle(
               height: 1.3,
             ),
-            maxLines: 20,
+            maxLines: 18,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             controller: _controller,
           ),
         ),
-
-        for (var i = 0; i < 20; i++)
+        for (var i = 0; i < 18; i++)
           Positioned(
             left: 16,
             right: 16,

@@ -15,29 +15,43 @@ class TaskItem extends StatefulWidget {
 class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
-    
     var time = DateFormat.jm().format(widget.task.dateTime);
 
+    if (time.length == 7 || time.length == 4) {
+      time = "0$time";
+    }
+
     return Container(
-      height: 116,
       margin: const EdgeInsets.only(bottom: 20, left: 6),
       child: Row(
         children: [
-          Text(time, style: MyTextStyles.taskTimeStyle),
+          // add zero if hours less than 10
+          SizedBox(
+              width: 60, child: Text(time, style: MyTextStyles.taskTimeStyle)),
           Container(
+            constraints: const BoxConstraints(minHeight: 116),
             margin: const EdgeInsets.only(left: 4),
             width: MediaQuery.of(context).size.width - 85,
-            height: 116,
             decoration: ShapeDecoration(
-              color: Color(0xCCF2F2F3),
+              color: const Color(0xCCF2F2F3),
+              shadows: [
+                BoxShadow(
+                    color: const Color(0x33000000),
+                    offset: const Offset(0, 1),
+                    blurRadius: 2,
+                    spreadRadius: 0)
+              ],
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 11),
-              child: Text("Task 1", style: MyTextStyles.taskTextStyle),
-            ),
-          )
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 11),
+                child: widget.task.content.isNotEmpty
+                    ? Text(widget.task.content,
+                        style: MyTextStyles.taskTextStyle)
+                    : Text("*empty* ;)", style: MyTextStyles.taskTextStyle)),
+          ),
         ],
       ),
     );

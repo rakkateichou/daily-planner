@@ -1,16 +1,15 @@
 import 'package:daily_planner/components/sun_moon_indicator.dart';
+import 'package:daily_planner/database_utils.dart';
 import 'package:daily_planner/styles/text_styles.dart';
+import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_page.dart';
 
 class HomeLayout extends StatefulWidget {
-  const HomeLayout(
-      {Key? key, required this.controller, required this.taskCount})
-      : super(key: key);
+  const HomeLayout({Key? key, required this.controller}) : super(key: key);
 
   final HomeController controller;
-  final int taskCount;
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
@@ -28,6 +27,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   void initState() {
     _listener = () {
       readController();
+      setTasksStatus();
     };
     widget.controller.addListener(_listener);
     readController();
@@ -47,12 +47,13 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   void setTasksStatus() {
     setState(() {
-      if (widget.taskCount == 0) {
+      if (widget.controller.tasks.isEmpty) {
         _tasksString = "You completed all tasks today";
-      } else if (widget.taskCount == 1) {
+      } else if (widget.controller.tasks.length == 1) {
         _tasksString = "You have 1 to-do for today";
       } else {
-        _tasksString = "You have ${widget.taskCount} to-do's for today";
+        _tasksString =
+            "You have ${widget.controller.tasks.length} to-do's for today";
       }
     });
   }
@@ -60,7 +61,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   void readController() {
     var now = widget.controller.now;
     setState(() {
-      _objectPosition = _getObjectPosition(now);
+      _objectPosition = Utils.getObjectPosition(now);
       _indicatorType = _getIndicatorType(now);
       _starsOpacity = _getStarsOpacity(now);
     });
@@ -88,28 +89,21 @@ class _HomeLayoutState extends State<HomeLayout> {
     }
   }
 
-  double _getObjectPosition(DateTime now) {
-    var op = 0.0;
-    // minutes from the start of the day
-    final int minutes = now.hour * 60 + now.minute;
-    if (minutes > 5 * 60) {
-      op = (minutes - 300) / 1140 * 0.9;
-    } else {
-      op = (minutes / 300) * 0.1 + 0.9;
-    }
-    return op;
-  }
-
   @override
   Widget build(BuildContext context) {
+    var indicatorTasks = DBUtils.getTasksForIndicator(
+                widget.controller.taskBox, widget.controller.now);
+    var tasksDoubles = Utils.calculateOffsetsFromTasks(indicatorTasks);
+
     return Column(
       children: [
         SizedBox(
-          height: 180,
+          height: 195,
           child: SunMoonIndicator(
             position: _objectPosition,
             indicatorType: _indicatorType,
             starsOpacity: _starsOpacity,
+            tasks: tasksDoubles,
           ),
         ),
         Container(
