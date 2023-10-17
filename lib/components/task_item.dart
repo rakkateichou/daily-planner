@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TaskItem extends StatefulWidget {
-  const TaskItem({Key? key, required this.task}) : super(key: key);
+  const TaskItem({Key? key, required this.task, this.calendarStyle = false}) : super(key: key);
 
+
+  final bool calendarStyle;
   final Task task;
 
   @override
@@ -27,17 +29,17 @@ class _TaskItemState extends State<TaskItem> {
         children: [
           // add zero if hours less than 10
           SizedBox(
-              width: 60, child: Text(time, style: MyTextStyles.taskTimeStyle)),
+              width: 60, child: Text(time, style: MyTextStyles.taskTimeStyle.copyWith(color: widget.calendarStyle ? Colors.black : Colors.white))),
           Container(
             constraints: const BoxConstraints(minHeight: 116),
             margin: const EdgeInsets.only(left: 4),
             width: MediaQuery.of(context).size.width - 85,
             decoration: ShapeDecoration(
               color: const Color(0xCCF2F2F3),
-              shadows: [
+              shadows: const [
                 BoxShadow(
-                    color: const Color(0x33000000),
-                    offset: const Offset(0, 1),
+                    color: Color(0x33000000),
+                    offset: Offset(0, 1),
                     blurRadius: 2,
                     spreadRadius: 0)
               ],

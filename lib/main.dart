@@ -1,17 +1,18 @@
 import 'dart:ui';
 
-import 'package:daily_planner/models/task.dart';
+import 'package:daily_planner/controllers/color_controller.dart';
+import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
 import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'screens/home_page.dart';
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(TaskAdapter());
-  await Hive.openBox<Task>('tasks');
+  await DBController.getInstance().initialize();
+  await ColorController.getInstance().initialize();
   runApp(const MyApp());
 }
 
@@ -26,8 +27,9 @@ class MyApp extends StatelessWidget {
       title: 'Daily Planner',
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomePage(),
-        '/calendar': (context) => CalendarPage(),
+        HomePage.routeName: (context) => const HomePage(),
+        CalendarPage.routeName: (context) => CalendarPage(),
+        CalendarLastTasksPage.routeName: (context) => const CalendarLastTasksPage(),
       },
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {

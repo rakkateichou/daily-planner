@@ -1,23 +1,27 @@
 import 'package:daily_planner/components/task_item.dart';
-import 'package:daily_planner/models/task.dart';
-import 'package:daily_planner/screens/home_page.dart';
+import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class TaskLayout extends StatefulWidget {
-  const TaskLayout({Key? key, required this.controller}) : super(key: key);
-
-  final HomeController controller;
+  const TaskLayout({Key? key}) : super(key: key);
 
   @override
   State<TaskLayout> createState() => _TaskLayoutState();
 }
 
 class _TaskLayoutState extends State<TaskLayout> {
+  late DBController db;
+
+  @override
+  void initState() {
+    db = DBController.getInstance();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var tasks = db.getTasksForDay(DateTime.now());
     return Stack(
       children: [
         Positioned(
@@ -26,22 +30,22 @@ class _TaskLayoutState extends State<TaskLayout> {
           right: 0,
           bottom: 0,
           child: ListView.builder(
-            itemCount: widget.controller.tasks.length,
+            itemCount: tasks.length,
             padding: const EdgeInsets.only(bottom: 64, top: 20),
             itemBuilder: (context, index) {
               return Dismissible(
-                key: ValueKey<int>(widget.controller.tasks[index].id),
+                key: ValueKey<int>(tasks[index].id),
                 onDismissed: (direction) => {
                   setState(() {
-                    widget.controller.removeTask(widget.controller.tasks[index]);
+                    db.removeTask(tasks[index]);
                   })
                 },
-                child: TaskItem(task: widget.controller.tasks[index]),
+                child: TaskItem(task: tasks[index]),
               );
             },
           ),
         ),
-        if (widget.controller.tasks.isEmpty)
+        if (tasks.isEmpty)
           Positioned(
             bottom: 84,
             child: SizedBox(
