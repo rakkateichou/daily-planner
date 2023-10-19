@@ -34,12 +34,13 @@ class _HomePageState extends State<HomePage> {
   late DBController db;
 
   late DateTime now;
+  late Timer timer;
 
   @override
   void initState() {
     _colorController = ColorController.getInstance();
     db = DBController.getInstance();
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _tick());
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _tick());
     now = DateTime.now();
     _timeString = _formatDateTime(now);
 
@@ -55,6 +56,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
   void _toggleEditting() {
     setState(() {
       _isEditing = !_isEditing;
@@ -66,10 +73,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _tick() {
-    setState(() {
-      now = DateTime.now();
-      _timeString = _formatDateTime(now);
-    });
+    
   }
 
   @override

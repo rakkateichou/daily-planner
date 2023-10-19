@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart' as intl;
 
 class SunMoonIndicator extends StatefulWidget {
   const SunMoonIndicator(
@@ -65,6 +66,7 @@ class CurvePainter extends CustomPainter {
   final PictureInfo? starsPI;
   final double starsOpacity;
   final List<double> tasks;
+  final dateTime = DateTime(1970, 0, 0, 0, 0);
 
   CurvePainter(this.t, this.indicatorType, this.starsOpacity, this.tasks,
       this.moonDotsPI, this.starsPI);
@@ -120,6 +122,21 @@ class CurvePainter extends CustomPainter {
 
     canvas.drawLine(Offset(circleX2 + 3, circleY2 - 4),
         Offset(circleX2 + 8, circleY2 - 13), paint);
+
+    // draw 12:00 (a. m.) text above the dilimeter
+    final textPainter = TextPainter(
+        text: TextSpan(
+            text: intl.DateFormat.jm().format(dateTime),
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500)),
+        textDirection: TextDirection.ltr);
+    textPainter.layout();
+    textPainter.paint(
+        canvas,
+        Offset(circleX2 + 10 - textPainter.width / 2,
+            circleY2 - 15 - textPainter.height));
 
     // Draw the moving circle
     final circlePaint = Paint()

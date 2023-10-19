@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/timer_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   late double _starsOpacity = 0.0;
 
   late VoidCallback _update;
+  late Timer timer;
 
   late DBController db;
 
@@ -32,7 +34,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       setIndicator(now);
       setTasksStatus(now);
     };
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => _update());
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _update());
     
     var now = DateTime.now();
     setIndicator(now);
@@ -42,6 +44,12 @@ class _HomeLayoutState extends State<HomeLayout> {
     // _tasksString = "Counting your to-do's for today";
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   void setTasksStatus(DateTime now) {

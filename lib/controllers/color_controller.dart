@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:daily_planner/controllers/timer_controller.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class ColorController extends ChangeNotifier {
 
   static ColorController? _instance;
 
+  late Timer timer;
+
   ColorController._();
 
   factory ColorController.getInstance() {
@@ -26,7 +29,13 @@ class ColorController extends ChangeNotifier {
 
   Future<void> initialize() async {
     calculateColor();
-    Timer.periodic(const Duration(seconds: 1), (Timer t) => calculateColor());
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => calculateColor());
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   Color _primaryColor = Colors.white;

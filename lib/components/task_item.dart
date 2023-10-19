@@ -27,7 +27,6 @@ class _TaskItemState extends State<TaskItem> {
       margin: const EdgeInsets.only(bottom: 20, left: 6),
       child: Row(
         children: [
-          // add zero if hours less than 10
           SizedBox(
               width: 60, child: Text(time, style: MyTextStyles.taskTimeStyle.copyWith(color: widget.calendarStyle ? Colors.black : Colors.white))),
           Container(
@@ -35,7 +34,7 @@ class _TaskItemState extends State<TaskItem> {
             margin: const EdgeInsets.only(left: 4),
             width: MediaQuery.of(context).size.width - 85,
             decoration: ShapeDecoration(
-              color: const Color(0xCCF2F2F3),
+              color: widget.calendarStyle ? const Color(0xFFFFFFFF) : const Color(0xCCF2F2F3),
               shadows: const [
                 BoxShadow(
                     color: Color(0x33000000),
