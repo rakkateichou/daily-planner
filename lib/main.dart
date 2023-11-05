@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
@@ -17,6 +18,7 @@ void main() async {
   await ColorController.getInstance().initialize();
   await SelectingController.getInstance().initialize();
   await EditingController.getInstance().initialize();
+  await DayTasksController.getInstance().initialize();
   runApp(const MyApp());
 }
 

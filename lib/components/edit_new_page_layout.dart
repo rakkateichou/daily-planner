@@ -7,9 +7,13 @@ import 'package:intl/intl.dart';
 
 class EditNewPageLayout extends StatefulWidget {
   const EditNewPageLayout(
-      {Key? key, required this.taskCallback, required this.popCallback})
+      {Key? key,
+      required this.taskCallback,
+      required this.popCallback,
+      this.taskToEdit})
       : super(key: key);
 
+  final Task? taskToEdit;
   final Function(Task task) taskCallback;
   final VoidCallback popCallback;
 
@@ -27,13 +31,23 @@ class _EditNewPageLayoutState extends State<EditNewPageLayout> {
   void initState() {
     super.initState();
     var now = DateTime.now();
-    _dateTime = DateTime.now();
-    _timeText = DateFormat.jm().format(now);
-    _dateText = DateFormat.yMMMMd().format(now);
-    _controller = TextEditingController();
-    _controller.addListener(() {
-      _callCallback();
-    });
+    if (widget.taskToEdit == null) {
+      _dateTime = DateTime.now();
+      _timeText = DateFormat.jm().format(now);
+      _dateText = DateFormat.yMMMMd().format(now);
+      _controller = TextEditingController();
+      _controller.addListener(() {
+        _callCallback();
+      });
+    } else {
+      _dateTime = widget.taskToEdit!.dateTime;
+      _timeText = DateFormat.jm().format(_dateTime);
+      _dateText = DateFormat.yMMMMd().format(_dateTime);
+      _controller = TextEditingController(text: widget.taskToEdit!.content);
+      _controller.addListener(() {
+        _callCallback();
+      });
+    }
   }
 
   void _pickTime() {
@@ -74,7 +88,7 @@ class _EditNewPageLayoutState extends State<EditNewPageLayout> {
 
   void _callCallback() {
     widget.taskCallback(Task(
-        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        id: widget.taskToEdit?.id ?? DateTime.now().millisecondsSinceEpoch ~/ 1000,
         content: _controller.text,
         dateTime: _dateTime));
   }

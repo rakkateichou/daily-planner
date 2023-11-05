@@ -18,15 +18,13 @@ class DBController {
     box = await Hive.openBox('tasks');
   }
 
-  // Add methods for database operations
-
   List<Task> getTasksForDay(DateTime day) {
-    var tasksForToday = box.values.where((element) {
+    var tasksForDay = box.values.where((element) {
       return element.dateTime.day == DateTime.now().day &&
           element.dateTime.month == DateTime.now().month &&
           element.dateTime.year == DateTime.now().year;
     }).toList();
-    return tasksForToday;
+    return tasksForDay;
   }
 
   List<Task> getTasksForIndicator(DateTime day) {
@@ -93,12 +91,12 @@ class DBController {
     return task.id;
   }
 
-  void deleteTask(Task task) {
+  void removeTask(Task task) {
     lastDeleteTask = task;
     box.delete(task.id);
   }
 
-  void deleteTasks(List<Task> tasks) {
+  void removeTasks(List<Task> tasks) {
     tasks.forEach((element) {
       box.delete(element.id);
     });

@@ -17,11 +17,13 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: _colorController.primaryColor,
-        title: const Text('Tasks'),
-      ),
-      body: const CalList(type: CalListType.nextTasks)
-    );
+        appBar: AppBar(
+          backgroundColor: _colorController.primaryColor,
+          title: const Text('Tasks'),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          ],
+        ),
+        body: const CalList(type: CalListType.nextTasks));
   }
 }

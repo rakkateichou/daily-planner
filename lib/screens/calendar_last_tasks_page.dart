@@ -20,6 +20,9 @@ class _CalendarPageState extends State<CalendarLastTasksPage> {
         appBar: AppBar(
           backgroundColor: _colorController.primaryColor,
           title: const Text('Past Tasks'),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          ],
         ),
         body: const CalList(type: CalListType.lastTasks)
     );

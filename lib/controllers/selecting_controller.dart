@@ -27,8 +27,16 @@ class SelectingController extends ChangeNotifier {
     super.dispose();
   }
 
+  void quitSelecting() {
+    isSelectingMode = false;
+    selectedTasks = [];
+    notifyListeners();
+  }
+
+  bool checkSelected(Task task) => selectedTasks.contains(task);
+
   void onLongPress(Task task) {
-    print("object");
+    print("onLongPress");
     if (!isSelectingMode) {
       isSelectingMode = true;
       selectedTasks.add(task);

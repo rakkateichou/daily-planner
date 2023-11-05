@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class EditingController extends ChangeNotifier {
   late bool isEditing;
+  Task? taskToEdit;
 
   static EditingController? _instance;
 
@@ -26,7 +27,16 @@ class EditingController extends ChangeNotifier {
   }
 
   void toggleEditing() {
+    if (isEditing) {
+      taskToEdit = null;
+    }
     isEditing = !isEditing;
+    notifyListeners();
+  }
+
+  void startEditing(Task task) {
+    taskToEdit = task;
+    isEditing = true;
     notifyListeners();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:daily_planner/components/cal_item_header.dart';
 import 'package:daily_planner/components/task_item.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class CalList extends StatefulWidget {
 }
 
 class _CalListState extends State<CalList> {
-  final _db = DBController.getInstance();
+  DBController db = DBController.getInstance();
+  SelectingController sc = SelectingController.getInstance();
 
   late ScrollController _scrollController;
 
@@ -44,9 +46,9 @@ class _CalListState extends State<CalList> {
   List<Widget> generateNextPage() {
     setState(() => isLoading = true);
     if (widget.type == CalListType.lastTasks) {
-      tasks.addAll(_db.getNextNTasksBeforeToday(10, page));
+      tasks.addAll(db.getNextNTasksBeforeToday(10, page));
     } else if (widget.type == CalListType.nextTasks) {
-      tasks.addAll(_db.getNextNTasksFromToday(10, page));
+      tasks.addAll(db.getNextNTasksFromToday(10, page));
     }
     setState(() {
       page++;
@@ -58,7 +60,20 @@ class _CalListState extends State<CalList> {
         widgets.add(
             CalItemHeader(date: DateFormat.yMMMMd().format(tasks[i].dateTime)));
       }
-      widgets.add(TaskItem(task: tasks[i], calendarStyle: true));
+      widgets.add(
+        GestureDetector(
+          onLongPress: () => sc.onLongPress(tasks[i]),
+          onTap: () => sc.onTap(tasks[i]),
+          child: ListenableBuilder(
+            listenable: sc,
+            builder: (context, child) => TaskItem(
+              task: tasks[i],
+              calendarStyle: true,
+              isSelected: sc.checkSelected(tasks[i]),
+            ),
+          ),
+        ),
+      );
     }
 
     setState(() => isLoading = false);
@@ -121,7 +136,8 @@ class _CalListState extends State<CalList> {
             return nextTaskBuilder(context, widgets, index);
           } else if (widget.type == CalListType.lastTasks) {
             return lastTaskBuilder(context, widgets, index);
-          } else { // should never happen
+          } else {
+            // should never happen
             return const SizedBox();
           }
         },

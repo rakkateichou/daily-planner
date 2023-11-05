@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,9 @@ class _HomeLayoutState extends State<HomeLayout> {
   late VoidCallback _update;
   late Timer timer;
 
-  final DBController db = DBController.getInstance();
-  final ColorController cc = ColorController.getInstance();
+  DBController db = DBController.getInstance();
+  DayTasksController dtc = DayTasksController.getInstance();
+  ColorController cc = ColorController.getInstance();
 
   @override
   void initState() {
@@ -52,7 +54,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 
   void setTasksStatus(DateTime now) {
-    var tasks = db.getTasksForDay(now);
+    var tasks = dtc.tasks;
     setState(() {
       if (tasks.isEmpty) {
         _tasksString = "You completed all tasks today";
@@ -67,31 +69,9 @@ class _HomeLayoutState extends State<HomeLayout> {
   void setIndicator(DateTime now) {
     setState(() {
       _objectPosition = Utils.getObjectPosition(now);
-      _indicatorType = _getIndicatorType(now);
-      _starsOpacity = _getStarsOpacity(now);
+      _indicatorType = Utils.getIndicatorType(now);
+      _starsOpacity = Utils.getStarsOpacity(now);
     });
-  }
-
-  double _getStarsOpacity(DateTime now) {
-    var so = 0.0;
-    if (now.hour >= 20 && now.hour < 22) {
-      so = (now.hour - 20) / 2;
-    } else if (now.hour >= 5 && now.hour < 7) {
-      so = 1 - (now.hour - 4) / 2;
-    } else if (now.hour >= 22 || now.hour < 5) {
-      so = 1.0;
-    } else {
-      so = 0.0;
-    }
-    return so;
-  }
-
-  IndicatorType _getIndicatorType(DateTime now) {
-    if (now.hour >= 5 && now.hour < 22) {
-      return IndicatorType.sun;
-    } else {
-      return IndicatorType.moon;
-    }
   }
 
   @override

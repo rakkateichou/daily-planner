@@ -1,5 +1,7 @@
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/day_tasks_controller.dart';
+import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:daily_planner/styles/text_styles.dart';
@@ -21,6 +23,8 @@ class _MyAppBarState extends State<MyAppBar> {
   SelectingController sc = SelectingController.getInstance();
   ColorController cc = ColorController.getInstance();
   DBController db = DBController.getInstance();
+  DayTasksController dtc = DayTasksController.getInstance();
+  EditingController ec = EditingController.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +64,8 @@ class _MyAppBarState extends State<MyAppBar> {
                   IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
-                      
+                      ec.startEditing(sc.selectedTasks[0]);
+                      sc.quitSelecting();
                     },
                   ),
                 IconButton(
@@ -74,7 +79,8 @@ class _MyAppBarState extends State<MyAppBar> {
                           Navigator.pop(context);
                         }, child: Text("Cancel")),
                         TextButton(onPressed: () {
-                          db.deleteTasks(sc.selectedTasks);
+                          dtc.removeTasks(sc.selectedTasks);
+                          db.removeTasks(sc.selectedTasks);
                           sc.selectedTasks.clear();
                           sc.isSelectingMode = false;
                           Navigator.pop(context);

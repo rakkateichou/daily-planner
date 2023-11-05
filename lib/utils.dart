@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/models/task.dart';
 
 class Utils {
@@ -47,16 +48,36 @@ class Utils {
     return op;
   }
 
-  static int translateToHour(double t) { //FIXME: translating to hours is not working properly
-    int minutes;
-    if (t >= 0.9) {
-      minutes = ((t - 0.9) / 0.1 * 300).toInt();
+  static int translateToHour(double t) {
+    int hour;
+    if (t < 0.9) {
+      hour = (t / 0.9 * 19).toInt() + 5;
     } else {
-      minutes = (t / 0.1 * 300).toInt();
+      hour = ((t - 0.9) / 0.1 * 5).toInt();
     }
-
-    int hour = minutes ~/ 60;
-
+    // print("$t : $hour");
     return hour;
+  }
+
+  static double getStarsOpacity(DateTime now) {
+    var so = 0.0;
+    if (now.hour >= 20 && now.hour < 22) {
+      so = (now.hour - 20) / 2;
+    } else if (now.hour >= 5 && now.hour < 7) {
+      so = 1 - (now.hour - 4) / 2;
+    } else if (now.hour >= 22 || now.hour < 5) {
+      so = 1.0;
+    } else {
+      so = 0.0;
+    }
+    return so;
+  }
+
+  static IndicatorType getIndicatorType(DateTime now) {
+    if (now.hour >= 5 && now.hour < 22) {
+      return IndicatorType.sun;
+    } else {
+      return IndicatorType.moon;
+    }
   }
 }
