@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
 
-import 'package:daily_planner/controllers/timer_controller.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +14,8 @@ class ColorController extends ChangeNotifier {
   final eveningButtonColor = const Color.fromARGB(255, 1, 56, 73);
   final nightButtonColor = const Color.fromRGBO(30, 30, 30, 1);
 
+  late Function(Timer) timerCallback;
+
   static ColorController? _instance;
 
   late Timer timer;
@@ -28,8 +28,10 @@ class ColorController extends ChangeNotifier {
   }
 
   Future<void> initialize() async {
-    calculateColor();
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => calculateColor());
+    timerCallback = (Timer t) => calculateColor(DateTime.now().hour);
+    calculateColor(DateTime.now().hour);
+    timer = Timer.periodic(
+        const Duration(seconds: 1), timerCallback);
   }
 
   @override
@@ -54,34 +56,48 @@ class ColorController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void calculateColor() {
-    var now = DateTime.now();
+  void freezeTime() {
+    timer.cancel();
+  }
+
+  void unfreezeTime() {
+    timer = Timer.periodic(
+        const Duration(seconds: 1), timerCallback);
+  }
+
+  void manualSetColorFromT(double t) {
+    var hour = Utils.translateToHour(t);
+    // print(hour);
+    calculateColor(hour);
+  }
+
+  void calculateColor(int hour) {
     var cc = Colors.white;
     var cbc = Colors.white;
     var interpolateColor = Utils.interpolateColor;
-    if (now.hour >= 6 && now.hour < 12) {
-      cc = interpolateColor(morningColor, dayColor, now.hour / 12);
-      cbc = interpolateColor(morningButtonColor, dayButtonColor, now.hour / 12);
-    } else if (now.hour >= 12 && now.hour < 17) {
+    if (hour >= 6 && hour < 12) {
+      cc = interpolateColor(morningColor, dayColor, hour / 12);
+      cbc = interpolateColor(morningButtonColor, dayButtonColor, hour / 12);
+    } else if (hour >= 12 && hour < 17) {
       cc = dayColor;
       cbc = dayColor;
-    } else if (now.hour >= 17 && now.hour < 19) {
-      cc = interpolateColor(dayColor, eveningColor, now.hour / 20);
-      cbc = interpolateColor(dayButtonColor, eveningButtonColor, now.hour / 20);
-    } else if (now.hour >= 19 && now.hour < 21) {
+    } else if (hour >= 17 && hour < 19) {
+      cc = interpolateColor(dayColor, eveningColor, hour / 20);
+      cbc = interpolateColor(dayButtonColor, eveningButtonColor, hour / 20);
+    } else if (hour >= 19 && hour < 21) {
       cc = eveningColor;
       cbc = eveningButtonColor;
-    } else if (now.hour >= 21 && now.hour < 24) {
-      cc = interpolateColor(eveningColor, nightColor, now.hour / 24);
+    } else if (hour >= 21 && hour < 24) {
+      cc = interpolateColor(eveningColor, nightColor, hour / 24);
       cbc =
-          interpolateColor(eveningButtonColor, nightButtonColor, now.hour / 24);
-    } else if (now.hour >= 0 && now.hour < 5) {
+          interpolateColor(eveningButtonColor, nightButtonColor, hour / 24);
+    } else if (hour >= 0 && hour < 5) {
       cc = nightColor;
       cbc = nightButtonColor;
     } else {
-      cc = interpolateColor(nightColor, morningColor, now.hour / 6);
+      cc = interpolateColor(nightColor, morningColor, hour / 6);
       cbc =
-          interpolateColor(nightButtonColor, morningButtonColor, now.hour / 6);
+          interpolateColor(nightButtonColor, morningButtonColor, hour / 6);
     }
 
     setPrimaryColor(cc);

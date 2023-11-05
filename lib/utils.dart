@@ -46,4 +46,17 @@ class Utils {
     }
     return op;
   }
+
+  static int translateToHour(double t) { //FIXME: translating to hours is not working properly
+    int minutes;
+    if (t >= 0.9) {
+      minutes = ((t - 0.9) / 0.1 * 300).toInt();
+    } else {
+      minutes = (t / 0.1 * 300).toInt();
+    }
+
+    int hour = minutes ~/ 60;
+
+    return hour;
+  }
 }

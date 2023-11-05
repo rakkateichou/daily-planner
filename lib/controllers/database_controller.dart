@@ -2,9 +2,9 @@ import 'package:daily_planner/models/task.dart';
 import 'package:hive/hive.dart';
 
 class DBController {
-
   static DBController? _instance;
   late Box<Task> box; // Change this to your specific Hive box
+  Task? lastDeleteTask;
 
   DBController._();
 
@@ -31,7 +31,8 @@ class DBController {
 
   List<Task> getTasksForIndicator(DateTime day) {
     var morning = DateTime(day.year, day.month, day.day, 5);
-    var tommorow = DateTime(day.year, day.month, day.day, 5).add(const Duration(days: 1));
+    var tommorow =
+        DateTime(day.year, day.month, day.day, 5).add(const Duration(days: 1));
     // today from 5 am and tommorow till 5 am
     var tasksForToday = box.values.where((element) {
       return element.dateTime.isAfter(morning) &&
@@ -47,8 +48,21 @@ class DBController {
               element.dateTime.month == DateTime.now().month &&
               element.dateTime.year == DateTime.now().year);
     }).toList();
-    tasksForToday.sort((a, b) => a.dateTime.compareTo(b.dateTime));  // TODO: I realy have to get it all at once? like, no internal paging?
-    return tasksForToday;
+    tasksForToday.sort((a, b) => a.dateTime.compareTo(b
+        .dateTime)); // TODO: I realy have to get it all at once? like, no internal paging?
+
+    int startIndex = page * n;
+    int endIndex = (page + 1) * n;
+
+    if (startIndex >= tasksForToday.length) {
+      return [];
+    }
+
+    if (endIndex > tasksForToday.length) {
+      endIndex = tasksForToday.length;
+    }
+
+    return tasksForToday.sublist(startIndex, endIndex);
   }
 
   List<Task> getNextNTasksBeforeToday(int n, int page) {
@@ -58,8 +72,20 @@ class DBController {
               element.dateTime.month == DateTime.now().month &&
               element.dateTime.year == DateTime.now().year);
     }).toList();
-    tasksForToday.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    return tasksForToday.sublist(page * n, (page + 1) * n);
+    tasksForToday.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+
+    int startIndex = page * n;
+    int endIndex = (page + 1) * n;
+
+    if (startIndex >= tasksForToday.length) {
+      return [];
+    }
+
+    if (endIndex > tasksForToday.length) {
+      endIndex = tasksForToday.length;
+    }
+
+    return tasksForToday.sublist(startIndex, endIndex);
   }
 
   int addTask(Task task) {
@@ -67,7 +93,20 @@ class DBController {
     return task.id;
   }
 
-  void removeTask(Task task) {
+  void deleteTask(Task task) {
+    lastDeleteTask = task;
     box.delete(task.id);
+  }
+
+  void deleteTasks(List<Task> tasks) {
+    tasks.forEach((element) {
+      box.delete(element.id);
+    });
+  }
+
+  void restoreLastDeleteTask() {
+    if (lastDeleteTask != null) {
+      box.put(lastDeleteTask!.id, lastDeleteTask!);
+    }
   }
 }

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/editing_controller.dart';
+import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
 import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ void main() async {
   await Hive.initFlutter();
   await DBController.getInstance().initialize();
   await ColorController.getInstance().initialize();
+  await SelectingController.getInstance().initialize();
+  await EditingController.getInstance().initialize();
   runApp(const MyApp());
 }
 

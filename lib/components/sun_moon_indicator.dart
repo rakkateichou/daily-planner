@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -12,7 +9,10 @@ class SunMoonIndicator extends StatefulWidget {
       this.indicatorType = IndicatorType.sun,
       this.starsOpacity = 0.0,
       this.tasks = const [],
-      this.cloudAppearance = const (0.3, 0.5)})
+      this.cloudAppearance = const (0.3, 0.5),
+      this.draggableIndicator = false,
+      this.onIndicatorPosition, 
+      this.onDragStart, this.onDragEnd})
       : super(key: key);
 
   final double position;
@@ -20,6 +20,10 @@ class SunMoonIndicator extends StatefulWidget {
   final double starsOpacity;
   final List<double> tasks;
   final (double, double) cloudAppearance;
+  final bool draggableIndicator;
+  final Function(double)? onIndicatorPosition;
+  final VoidCallback? onDragStart;
+  final VoidCallback? onDragEnd;
 
   @override
   _SunMoonIndicatorState createState() => _SunMoonIndicatorState();
@@ -32,13 +36,13 @@ class _SunMoonIndicatorState extends State<SunMoonIndicator> {
 
   @override
   void initState() {
-    super.initState();
     _loadSvg();
+    super.initState();
   }
 
   _loadSvg() async {
     var mpi = await vg.loadPicture(const SvgAssetLoader('assets/moon_dots.svg'),
-        null); // TODO: make it native maybe ?
+        null); // noTODO: make it native maybe ?
     var spi =
         await vg.loadPicture(const SvgAssetLoader('assets/stars.svg'), null);
     // var cpi = await vg.loadPicture(const SvgAssetLoader('assets/cloud.svg'), null);
@@ -50,7 +54,15 @@ class _SunMoonIndicatorState extends State<SunMoonIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onPanUpdate: (details) {
+        if (widget.draggableIndicator) {
+          
+          widget.onIndicatorPosition!(details.globalPosition.dx / MediaQuery.of(context).size.width);
+        }
+      },
+      onPanDown: (details) => widget.onDragStart!(),
+      onPanEnd: (details) => widget.onDragEnd!(),
         child: CustomPaint(
       painter: CurvePainter(widget.position, widget.indicatorType,
           widget.starsOpacity, widget.tasks, moonDotsPI, starsPI),

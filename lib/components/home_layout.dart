@@ -1,12 +1,11 @@
 import 'dart:async';
 
 import 'package:daily_planner/components/sun_moon_indicator.dart';
+import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
-import 'package:daily_planner/controllers/timer_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
-
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({Key? key}) : super(key: key);
@@ -24,18 +23,18 @@ class _HomeLayoutState extends State<HomeLayout> {
   late VoidCallback _update;
   late Timer timer;
 
-  late DBController db;
+  final DBController db = DBController.getInstance();
+  final ColorController cc = ColorController.getInstance();
 
   @override
   void initState() {
-    db = DBController.getInstance();
     _update = () {
       var now = DateTime.now();
       setIndicator(now);
       setTasksStatus(now);
     };
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _update());
-    
+
     var now = DateTime.now();
     setIndicator(now);
     _tasksString = "";
@@ -104,13 +103,18 @@ class _HomeLayoutState extends State<HomeLayout> {
     return Column(
       children: [
         SizedBox(
-          height: 195,
+          height: MediaQuery.of(context).size.height * 0.26,
           child: SunMoonIndicator(
-            position: _objectPosition,
-            indicatorType: _indicatorType,
-            starsOpacity: _starsOpacity,
-            tasks: tasksDoubles,
-          ),
+              position: _objectPosition,
+              indicatorType: _indicatorType,
+              starsOpacity: _starsOpacity,
+              tasks: tasksDoubles,
+              draggableIndicator: true,
+              onDragStart: cc.freezeTime,
+              onDragEnd: cc.unfreezeTime,
+              onIndicatorPosition: (position) {
+                cc.manualSetColorFromT(position);
+              }),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),

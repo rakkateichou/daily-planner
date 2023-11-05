@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:daily_planner/components/colorful_background.dart';
 import 'package:daily_planner/components/edit_new_page_layout.dart';
+import 'package:daily_planner/components/my_appbar.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/editing_controller.dart';
+import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
-import 'package:daily_planner/screens/calendar_page.dart';
-import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,33 +25,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late String _timeString;
-  
-  late ColorController _colorController;
+
+  late ColorController cc;
 
   bool _isEditing = false;
 
   late Task _lastTaskSaved;
 
   late DBController db;
+  late SelectingController sc;
+  late EditingController ec;
 
   late DateTime now;
   late Timer timer;
 
   @override
   void initState() {
-    _colorController = ColorController.getInstance();
+    cc = ColorController.getInstance();
     db = DBController.getInstance();
+    sc = SelectingController.getInstance();
+    ec = EditingController.getInstance()
+      ..addListener(() {
+        setState(() {
+          _isEditing = ec.isEditing;
+        });
+      });
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _tick());
     now = DateTime.now();
     _timeString = _formatDateTime(now);
-
-    // change _now so whole day passes in 10 seconds
-    // Timer.periodic(const Duration(milliseconds: 500), (timer) {
-    //   setState(() {
-    //     _now = _now.add(const Duration(minutes: 1));
-    //     _calculateTimeVariables();
-    //   });
-    // });
     _lastTaskSaved =
         Task(id: 0, content: "Dummy Task", dateTime: DateTime.now());
     super.initState();
@@ -62,18 +64,15 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _toggleEditting() {
-    setState(() {
-      _isEditing = !_isEditing;
-    });
-  }
-
   String _formatDateTime(DateTime dateTime) {
     return DateFormat.jm().format(dateTime);
   }
 
   void _tick() {
-    
+    setState(() {
+      now = DateTime.now();
+      _timeString = _formatDateTime(now);
+    });
   }
 
   @override
@@ -85,28 +84,14 @@ class _HomePageState extends State<HomePage> {
           if (_isEditing) {
             db.addTask(_lastTaskSaved);
           }
-          _toggleEditting();
+          ec.toggleEditing();
         },
-        backgroundColor: _colorController.secondaryColor,
+        backgroundColor: cc.secondaryColor,
         child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
       ),
-      appBar: MediaQuery.of(context).viewInsets.bottom < 100
-          ? AppBar(
-              toolbarHeight: 83,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Text(_timeString, style: MyTextStyles.homeMainStyle),
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, CalendarPage.routeName);
-                  },
-                  icon: const Icon(Icons.calendar_month),
-                ),
-              ],
-            )
-          : null,
+      appBar: MyAppBar(
+        timeString: _timeString,
+      ),
       extendBodyBehindAppBar: true,
       floatingActionButtonLocation: _isEditing
           ? FloatingActionButtonLocation.endFloat
@@ -148,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                         taskCallback: (task) {
                           _lastTaskSaved = task;
                         },
-                        popCallback: () => _toggleEditting(),
+                        popCallback: () => ec.toggleEditing(),
                       ))
                   : const TaskLayout(),
             ),

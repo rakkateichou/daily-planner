@@ -1,5 +1,6 @@
 import 'package:daily_planner/components/task_item.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +13,11 @@ class TaskLayout extends StatefulWidget {
 
 class _TaskLayoutState extends State<TaskLayout> {
   late DBController db;
+  late SelectingController sc;
 
   @override
   void initState() {
+    sc = SelectingController.getInstance();
     db = DBController.getInstance();
     super.initState();
   }
@@ -33,14 +36,35 @@ class _TaskLayoutState extends State<TaskLayout> {
             itemCount: tasks.length,
             padding: const EdgeInsets.only(bottom: 64, top: 20),
             itemBuilder: (context, index) {
-              return Dismissible(
-                key: ValueKey<int>(tasks[index].id),
-                onDismissed: (direction) => {
-                  setState(() {
-                    db.removeTask(tasks[index]);
-                  })
-                },
-                child: TaskItem(task: tasks[index]),
+              return GestureDetector(
+                onLongPress: () => sc.onLongPress(tasks[index]),
+                onTap: () => sc.onTap(tasks[index]),
+                child: Dismissible(
+                  key: ValueKey<int>(tasks[index].id),
+                  onDismissed: (direction) => {
+                    setState(() {
+                      db.deleteTask(tasks[index]);
+                    }),
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Task deleted"),
+                      action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () {
+                          setState(() {
+                            db.restoreLastDeleteTask();
+                          });
+                        },
+                      ),
+                    ))
+                  },
+                  child: ListenableBuilder(
+                    listenable: sc,
+                    builder: (context, child) => TaskItem(
+                      task: tasks[index],
+                      isSelected: sc.selectedTasks.contains(tasks[index]),
+                    ),
+                  ),
+                ),
               );
             },
           ),

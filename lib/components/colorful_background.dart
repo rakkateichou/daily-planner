@@ -1,7 +1,5 @@
-import 'dart:async';
 
 import 'package:daily_planner/controllers/color_controller.dart';
-import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
 class ColorfulBackground extends StatefulWidget {
@@ -15,10 +13,17 @@ class ColorfulBackground extends StatefulWidget {
 class _ColorfulBackgroundState extends State<ColorfulBackground> {
 
   late ColorController colorc;
+  Color color = Colors.white;
 
   @override
   void initState() {
     colorc = ColorController.getInstance();
+    colorc.addListener(() {
+      // print(colorc.primaryColor);
+      setState(() {
+        color = colorc.primaryColor;
+      });
+    });
     super.initState();
   }
 
@@ -31,7 +36,7 @@ class _ColorfulBackgroundState extends State<ColorfulBackground> {
         gradient: LinearGradient(
           begin: const Alignment(0, 0),
           end: const Alignment(0, 1),
-          colors: [colorc.primaryColor, Colors.black.withOpacity(0.51)],
+          colors: [color, Colors.black.withOpacity(0.51)],
         ),
       ),
     );
