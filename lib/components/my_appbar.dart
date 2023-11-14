@@ -3,6 +3,7 @@ import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
+import 'package:daily_planner/models/cal_list_type.dart';
 import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,8 @@ class _MyAppBarState extends State<MyAppBar> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, CalendarPage.routeName);
+                    Navigator.pushNamed(context, CalendarPage.routeName,
+                arguments: CalListType.nextTasks);
                   },
                   icon: const Icon(Icons.calendar_month),
                 ),

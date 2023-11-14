@@ -8,12 +8,17 @@ class TaskItem extends StatefulWidget {
       {Key? key,
       required this.task,
       this.calendarStyle = false,
-      this.isSelected = false})
+      this.isSelected = false,
+      this.onTap,
+      this.onLongPress})
       : super(key: key);
 
   final bool calendarStyle;
   final bool isSelected;
   final Task task;
+
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   @override
   _TaskItemState createState() => _TaskItemState();
@@ -58,13 +63,22 @@ class _TaskItemState extends State<TaskItem> {
                 side:  widget.isSelected ? const BorderSide(color: Color(0xFF4A4A4A), width: 3) : BorderSide.none,
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 11),
-                child: widget.task.content.isNotEmpty
-                    ? Text(widget.task.content,
-                        style: MyTextStyles.taskTextStyle)
-                    : Text("*empty* ;)", style: MyTextStyles.taskTextStyle)),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(8),
+                splashColor: Colors.white10,
+                onTap: widget.onTap ?? () {},
+                onLongPress: widget.onLongPress ?? () {},
+                child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 11),
+                    child: widget.task.content.isNotEmpty
+                        ? Text(widget.task.content,
+                            style: MyTextStyles.taskTextStyle)
+                        : Text("*empty* ;)", style: MyTextStyles.taskTextStyle)),
+              ),
+            ),
           ),
         ],
       ),

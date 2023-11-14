@@ -1,0 +1,1 @@
+enum CalListType { lastTasks, nextTasks }

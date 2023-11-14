@@ -5,6 +5,7 @@ import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
+// TODO: i should delete this and replace it with db listener
 class DayTasksController extends ChangeNotifier {
   List<Task> tasks = [];
   DBController db = DBController.getInstance();

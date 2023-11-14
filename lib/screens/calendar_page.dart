@@ -1,6 +1,12 @@
 import 'package:daily_planner/components/cal_list.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
+import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/searching_controller.dart';
+import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:flutter/material.dart';
+
+import '../components/calendar_app_bar.dart';
+import '../models/cal_list_type.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -12,18 +18,48 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final _colorController = ColorController.getInstance();
+  final cc = ColorController.getInstance();
+  final src = SearchingController.getInstance();
+  final slc = SelectingController.getInstance();
+  final db = DBController.getInstance();
+
+  late CalListType type;
+
+  @override
+  void initState() {
+    super.initState();
+    db.addListener(() {print("db changed");});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: _colorController.primaryColor,
-          title: const Text('Tasks'),
-          actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-          ],
-        ),
-        body: const CalList(type: CalListType.nextTasks));
+    type = ModalRoute.of(context)!.settings.arguments as CalListType;
+
+    return WillPopScope(
+      onWillPop: () async {
+        if (slc.isSelectingMode) {
+          slc.quitSelecting();
+          return false;
+        }
+        if (src.isSearching) {
+          src.quitSearching();
+          return false;
+        }
+        return true;
+      },
+      child: ListenableBuilder(
+        listenable: src,
+        builder: (context, child) => Scaffold(
+            appBar: PreferredSize(
+                preferredSize: src.isSearching
+                    ? const Size.fromHeight(112.0)
+                    : const Size.fromHeight(56.0),
+                child: CalendarAppBar(
+                    title: type == CalListType.nextTasks
+                        ? "Tasks"
+                        : "Past Tasks")),
+            body: CalList(type: type)),
+      ),
+    );
   }
 }

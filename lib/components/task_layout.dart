@@ -54,35 +54,33 @@ class _TaskLayoutState extends State<TaskLayout> {
             itemCount: tasks.length,
             padding: const EdgeInsets.only(bottom: 64, top: 20),
             itemBuilder: (context, index) {
-              return GestureDetector(
-                onLongPress: () => sc.onLongPress(tasks[index]),
-                onTap: () => sc.onTap(tasks[index]),
-                child: Dismissible(
-                  key: ValueKey<int>(tasks[index].id),
-                  onDismissed: (direction) => {
-                    setState(() {
-                      db.removeTask(tasks[index]);
-                      dtc.removeTask(tasks[index]);
-                    }),
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Task deleted"),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () {
-                          setState(() {
-                            db.restoreLastDeleteTask();
-                            dtc.fetchTasks();
-                          });
-                        },
-                      ),
-                    ))
-                  },
-                  child: ListenableBuilder(
-                    listenable: sc,
-                    builder: (context, child) => TaskItem(
-                      task: tasks[index],
-                      isSelected: sc.checkSelected(tasks[index]),
+              return Dismissible(
+                key: ValueKey<int>(tasks[index].id),
+                onDismissed: (direction) => {
+                  setState(() {
+                    db.removeTask(tasks[index]);
+                    dtc.removeTask(tasks[index]);
+                  }),
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Task deleted"),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () {
+                        setState(() {
+                          db.restoreLastDeleteTask();
+                          dtc.fetchTasks();
+                        });
+                      },
                     ),
+                  ))
+                },
+                child: ListenableBuilder(
+                  listenable: sc,
+                  builder: (context, child) => TaskItem(
+                    task: tasks[index],
+                    isSelected: sc.checkSelected(tasks[index]),
+                    onTap: () => sc.onTap(tasks[index]),
+                    onLongPress: () => sc.onLongPress(tasks[index]),
                   ),
                 ),
               );

@@ -3,10 +3,9 @@ import 'dart:ui';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/day_tasks_controller.dart';
-import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
-import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
 import 'package:daily_planner/screens/calendar_page.dart';
+import 'package:daily_planner/screens/edit_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -17,7 +16,6 @@ void main() async {
   await DBController.getInstance().initialize();
   await ColorController.getInstance().initialize();
   await SelectingController.getInstance().initialize();
-  await EditingController.getInstance().initialize();
   await DayTasksController.getInstance().initialize();
   runApp(const MyApp());
 }
@@ -34,8 +32,8 @@ class MyApp extends StatelessWidget {
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => const HomePage(),
-        CalendarPage.routeName: (context) => CalendarPage(),
-        CalendarLastTasksPage.routeName: (context) => const CalendarLastTasksPage(),
+        CalendarPage.routeName: (context) => const CalendarPage(),
+        EditTaskPage.routeName: (context) => const EditTaskPage(),
       },
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {

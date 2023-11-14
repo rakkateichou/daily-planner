@@ -1,11 +1,14 @@
 import 'package:daily_planner/components/cal_item_header.dart';
 import 'package:daily_planner/components/task_item.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/controllers/searching_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
-import 'package:daily_planner/screens/calendar_last_tasks_page.dart';
+import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../models/cal_list_type.dart';
 
 class CalList extends StatefulWidget {
   const CalList({Key? key, required this.type}) : super(key: key);
@@ -17,60 +20,75 @@ class CalList extends StatefulWidget {
 }
 
 class _CalListState extends State<CalList> {
-  DBController db = DBController.getInstance();
-  SelectingController sc = SelectingController.getInstance();
+  final db = DBController.getInstance();
+  final sc = SelectingController.getInstance();
+  final searchc = SearchingController.getInstance();
 
-  late ScrollController _scrollController;
+  late ScrollController scrollController;
 
   bool isLoading = false;
   List<Task> tasks = [];
   int page = 0;
 
   late int itemCount;
+  late List<Widget> widgets;
+
+  void _searchListener() {
+    scrollController.jumpTo(0);
+    tasks = [];
+    page = 0;
+    widgets = generateNextPage();
+  }
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
+    scrollController = ScrollController();
+    scrollController.addListener(() {
       if (isLoading) return;
       if (tasks.length < 10) return;
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      final currentScroll = _scrollController.position.pixels;
+      final maxScroll = scrollController.position.maxScrollExtent;
+      final currentScroll = scrollController.position.pixels;
       if (maxScroll - currentScroll <= 200) {
-        generateNextPage();
+        widgets.addAll(generateNextPage());
       }
     });
+    searchc.addListener(_searchListener);
+    widgets = generateNextPage();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    searchc.removeListener(_searchListener);
+    super.dispose();
   }
 
   List<Widget> generateNextPage() {
     setState(() => isLoading = true);
     if (widget.type == CalListType.lastTasks) {
-      tasks.addAll(db.getNextNTasksBeforeToday(10, page));
+      tasks.addAll(db.getPastTasks(10, page, search: searchc.query));
     } else if (widget.type == CalListType.nextTasks) {
-      tasks.addAll(db.getNextNTasksFromToday(10, page));
+      tasks.addAll(db.getNextTasks(10, page, search: searchc.query));
     }
     setState(() {
       page++;
     });
     final widgets = <Widget>[];
-
     for (var i = 0; i < tasks.length; i++) {
       if (i == 0 || tasks[i].dateTime.day != tasks[i - 1].dateTime.day) {
         widgets.add(
             CalItemHeader(date: DateFormat.yMMMMd().format(tasks[i].dateTime)));
       }
       widgets.add(
-        GestureDetector(
-          onLongPress: () => sc.onLongPress(tasks[i]),
-          onTap: () => sc.onTap(tasks[i]),
-          child: ListenableBuilder(
-            listenable: sc,
-            builder: (context, child) => TaskItem(
-              task: tasks[i],
-              calendarStyle: true,
-              isSelected: sc.checkSelected(tasks[i]),
-            ),
+        ListenableBuilder(
+          listenable: sc,
+          builder: (context, child) => TaskItem(
+            task: tasks[i],
+            calendarStyle: true,
+            isSelected: sc.checkSelected(tasks[i]),
+            onTap: () => sc.onTap(tasks[i]),
+            onLongPress: () => sc.onLongPress(tasks[i]),
           ),
         ),
       );
@@ -88,7 +106,8 @@ class _CalListState extends State<CalList> {
         child: ListTile(
           leading: const Icon(Icons.access_time),
           onTap: () {
-            Navigator.pushNamed(context, CalendarLastTasksPage.routeName);
+            Navigator.pushNamed(context, CalendarPage.routeName,
+                arguments: CalListType.lastTasks);
           },
           title: const Text('Past tasks'),
         ),
@@ -121,7 +140,6 @@ class _CalListState extends State<CalList> {
 
   @override
   Widget build(BuildContext context) {
-    final widgets = generateNextPage();
     if (widget.type == CalListType.nextTasks) {
       itemCount = isLoading ? widgets.length + 2 : widgets.length + 1;
     } else if (widget.type == CalListType.lastTasks) {
@@ -129,7 +147,7 @@ class _CalListState extends State<CalList> {
     }
     return Scrollbar(
       child: ListView.builder(
-        controller: _scrollController,
+        controller: scrollController,
         itemCount: itemCount,
         itemBuilder: (context, index) {
           if (widget.type == CalListType.nextTasks) {
@@ -145,5 +163,3 @@ class _CalListState extends State<CalList> {
     );
   }
 }
-
-enum CalListType { lastTasks, nextTasks }

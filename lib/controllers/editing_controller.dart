@@ -5,7 +5,7 @@ import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
 class EditingController extends ChangeNotifier {
-  late bool isEditing;
+  late bool isEditing = false;
   Task? taskToEdit;
 
   static EditingController? _instance;
@@ -15,10 +15,6 @@ class EditingController extends ChangeNotifier {
   factory EditingController.getInstance() {
     _instance ??= EditingController._();
     return _instance!;
-  }
-
-  Future<void> initialize() async {
-    isEditing = false;
   }
 
   @override

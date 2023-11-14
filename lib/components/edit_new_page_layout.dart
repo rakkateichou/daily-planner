@@ -185,7 +185,7 @@ class NoteLikeTextField extends StatelessWidget {
           bottom: 10,
           child: TextField(
             onChanged: (value) {
-              _controller.text = value;
+              // _controller.text = value;
             },
             maxLength: 450,
             style: MyTextStyles.taskEditingStyle,
