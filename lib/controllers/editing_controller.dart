@@ -1,7 +1,5 @@
-import 'dart:async';
 
 import 'package:daily_planner/models/task.dart';
-import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
 class EditingController extends ChangeNotifier {

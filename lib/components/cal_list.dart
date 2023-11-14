@@ -54,6 +54,7 @@ class _CalListState extends State<CalList> {
       }
     });
     searchc.addListener(_searchListener);
+    db.addListener(_searchListener);
     widgets = generateNextPage();
   }
 

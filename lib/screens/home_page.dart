@@ -5,7 +5,6 @@ import 'package:daily_planner/components/edit_new_page_layout.dart';
 import 'package:daily_planner/components/my_appbar.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
-import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
@@ -35,7 +34,6 @@ class _HomePageState extends State<HomePage> {
   ColorController cc = ColorController.getInstance();
   DBController db = DBController.getInstance();
   SelectingController sc = SelectingController.getInstance();
-  DayTasksController dtc = DayTasksController.getInstance();
   late EditingController ec;
 
 
@@ -79,19 +77,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (sc.isSelectingMode) {
-            sc.quitSelecting();
-          }
-          if (_isEditing) {
-            db.addTask(_lastTaskSaved);
-            dtc.fetchTasks();
-          }
-          ec.toggleEditing();
-        },
-        backgroundColor: cc.secondaryColor,
-        child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
+      floatingActionButton: ListenableBuilder(
+        listenable: cc,
+        builder: (child, context) => FloatingActionButton(
+          onPressed: () {
+            if (sc.isSelectingMode) {
+              sc.quitSelecting();
+            }
+            if (_isEditing) {
+              db.addTask(_lastTaskSaved);
+            }
+            ec.toggleEditing();
+          },
+          backgroundColor: cc.secondaryColor,
+          child: _isEditing ? const Icon(Icons.check) : const Icon(Icons.add),
+        ),
       ),
       appBar: MyAppBar(
         timeString: _timeString,

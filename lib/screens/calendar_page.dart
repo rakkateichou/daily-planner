@@ -1,6 +1,5 @@
 import 'package:daily_planner/components/cal_list.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
-import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/searching_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +20,12 @@ class _CalendarPageState extends State<CalendarPage> {
   final cc = ColorController.getInstance();
   final src = SearchingController.getInstance();
   final slc = SelectingController.getInstance();
-  final db = DBController.getInstance();
 
   late CalListType type;
 
   @override
   void initState() {
     super.initState();
-    db.addListener(() {print("db changed");});
   }
 
   @override

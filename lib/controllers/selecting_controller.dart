@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:daily_planner/models/task.dart';
-import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
 
 class SelectingController extends ChangeNotifier {
@@ -36,7 +35,6 @@ class SelectingController extends ChangeNotifier {
   bool checkSelected(Task task) => selectedTasks.contains(task);
 
   void onLongPress(Task task) {
-    print("onLongPress");
     if (!isSelectingMode) {
       isSelectingMode = true;
       selectedTasks.add(task);

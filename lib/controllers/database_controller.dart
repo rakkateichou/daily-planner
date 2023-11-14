@@ -19,11 +19,24 @@ class DBController extends ChangeNotifier{
     box = await Hive.openBox('tasks');
   }
 
+  List<Task> getTasksForToday() {
+    return getTasksForDay(DateTime.now());
+  }
+
   List<Task> getTasksForDay(DateTime day) {
+    // var tasksForDay = box.values.where((element) {
+    //   return element.dateTime.day == DateTime.now().day &&
+    //       element.dateTime.month == DateTime.now().month &&
+    //       element.dateTime.year == DateTime.now().year;
+    // }).toList();
+    // return tasksForDay;
+    var now = DateTime.now();
     var tasksForDay = box.values.where((element) {
-      return element.dateTime.day == DateTime.now().day &&
-          element.dateTime.month == DateTime.now().month &&
-          element.dateTime.year == DateTime.now().year;
+      return 
+          element.dateTime.isAfter(now) &&
+          element.dateTime.day == now.day &&
+          element.dateTime.month == now.month &&
+          element.dateTime.year == now.year;
     }).toList();
     return tasksForDay;
   }
@@ -42,11 +55,8 @@ class DBController extends ChangeNotifier{
 
   List<Task> getNextTasks(int n, int page, {String search = ""}) {
     var tasks = box.values.where((element) {
-      return (element.dateTime.isAfter(DateTime.now()) ||
-          (element.dateTime.day == DateTime.now().day &&
-              element.dateTime.month == DateTime.now().month &&
-              element.dateTime.year == DateTime.now().year))
-              && element.content.toLowerCase().contains(search.toLowerCase());
+      return (element.dateTime.isAfter(DateTime.now())
+              && element.content.toLowerCase().contains(search.toLowerCase()));
     }).toList();
     tasks.sort((a, b) => a.dateTime.compareTo(b
         .dateTime)); // TODO: I realy have to get it all at once? like, no internal paging?
@@ -66,11 +76,8 @@ class DBController extends ChangeNotifier{
 
   List<Task> getPastTasks(int n, int page, {String search = ""}) {
     var tasks = box.values.where((element) {
-      return (element.dateTime.isBefore(DateTime.now()) ||
-          (element.dateTime.day == DateTime.now().day &&
-              element.dateTime.month == DateTime.now().month &&
-              element.dateTime.year == DateTime.now().year))
-              && element.content.toLowerCase().contains(search.toLowerCase());
+      return (element.dateTime.isBefore(DateTime.now())
+              && element.content.toLowerCase().contains(search.toLowerCase()));
     }).toList();
     tasks.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     int startIndex = page * n;

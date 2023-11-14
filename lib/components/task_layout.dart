@@ -1,6 +1,5 @@
 import 'package:daily_planner/components/task_item.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
-import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
@@ -16,28 +15,26 @@ class TaskLayout extends StatefulWidget {
 class _TaskLayoutState extends State<TaskLayout> {
   late DBController db;
   late SelectingController sc;
-  late DayTasksController dtc;
 
   List<Task> tasks = [];
 
   void _listener() {
     setState(() {
-      tasks = dtc.tasks;
+      tasks = db.getTasksForToday();
     });
   }
 
   @override
   void initState() {
     sc = SelectingController.getInstance();
-    db = DBController.getInstance();
-    dtc = DayTasksController.getInstance()..addListener(_listener);
-    tasks = dtc.tasks;
+    db = DBController.getInstance()..addListener(_listener);
+    tasks = db.getTasksForToday();
     super.initState();
   }
 
   @override
   void dispose() {
-    dtc.removeListener(_listener);
+    db.removeListener(_listener);
     super.dispose();
   }
 
@@ -59,7 +56,6 @@ class _TaskLayoutState extends State<TaskLayout> {
                 onDismissed: (direction) => {
                   setState(() {
                     db.removeTask(tasks[index]);
-                    dtc.removeTask(tasks[index]);
                   }),
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text("Task deleted"),
@@ -68,7 +64,6 @@ class _TaskLayoutState extends State<TaskLayout> {
                       onPressed: () {
                         setState(() {
                           db.restoreLastDeleteTask();
-                          dtc.fetchTasks();
                         });
                       },
                     ),

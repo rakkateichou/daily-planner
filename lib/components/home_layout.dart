@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
-import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ class _HomeLayoutState extends State<HomeLayout> {
   late Timer timer;
 
   DBController db = DBController.getInstance();
-  DayTasksController dtc = DayTasksController.getInstance();
   ColorController cc = ColorController.getInstance();
 
   @override
@@ -54,7 +52,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 
   void setTasksStatus(DateTime now) {
-    var tasks = dtc.tasks;
+    var tasks = db.getTasksForToday();
     setState(() {
       if (tasks.isEmpty) {
         _tasksString = "You completed all tasks today";

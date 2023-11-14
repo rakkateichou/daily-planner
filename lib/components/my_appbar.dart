@@ -1,6 +1,5 @@
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
-import 'package:daily_planner/controllers/day_tasks_controller.dart';
 import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/cal_list_type.dart';
@@ -24,7 +23,6 @@ class _MyAppBarState extends State<MyAppBar> {
   SelectingController sc = SelectingController.getInstance();
   ColorController cc = ColorController.getInstance();
   DBController db = DBController.getInstance();
-  DayTasksController dtc = DayTasksController.getInstance();
   EditingController ec = EditingController.getInstance();
 
   @override
@@ -81,7 +79,6 @@ class _MyAppBarState extends State<MyAppBar> {
                           Navigator.pop(context);
                         }, child: Text("Cancel")),
                         TextButton(onPressed: () {
-                          dtc.removeTasks(sc.selectedTasks);
                           db.removeTasks(sc.selectedTasks);
                           sc.selectedTasks.clear();
                           sc.isSelectingMode = false;
