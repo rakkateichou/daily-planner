@@ -17,8 +17,6 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   late String _tasksString;
   late double _objectPosition;
-  late IndicatorType _indicatorType;
-  late double _starsOpacity = 0.0;
 
   late VoidCallback _update;
   late Timer timer;
@@ -67,8 +65,6 @@ class _HomeLayoutState extends State<HomeLayout> {
   void setIndicator(DateTime now) {
     setState(() {
       _objectPosition = Utils.getObjectPosition(now);
-      _indicatorType = Utils.getIndicatorType(now);
-      _starsOpacity = Utils.getStarsOpacity(now);
     });
   }
 
@@ -84,10 +80,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           height: MediaQuery.of(context).size.height * 0.26,
           child: SunMoonIndicator(
               position: _objectPosition,
-              indicatorType: _indicatorType,
-              starsOpacity: _starsOpacity,
               tasks: tasksDoubles,
-              draggableIndicator: true,
               onDragStart: cc.freezeTime,
               onDragEnd: cc.unfreezeTime,
               onIndicatorPosition: (position) {

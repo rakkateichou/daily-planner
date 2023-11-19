@@ -58,26 +58,4 @@ class Utils {
     // print("$t : $hour");
     return hour;
   }
-
-  static double getStarsOpacity(DateTime now) {
-    var so = 0.0;
-    if (now.hour >= 20 && now.hour < 22) {
-      so = (now.hour - 20) / 2;
-    } else if (now.hour >= 5 && now.hour < 7) {
-      so = 1 - (now.hour - 4) / 2;
-    } else if (now.hour >= 22 || now.hour < 5) {
-      so = 1.0;
-    } else {
-      so = 0.0;
-    }
-    return so;
-  }
-
-  static IndicatorType getIndicatorType(DateTime now) {
-    if (now.hour >= 5 && now.hour < 22) {
-      return IndicatorType.sun;
-    } else {
-      return IndicatorType.moon;
-    }
-  }
 }

@@ -61,6 +61,7 @@ class ColorController extends ChangeNotifier {
   }
 
   void unfreezeTime() {
+    timer.cancel();
     timer = Timer.periodic(
         const Duration(seconds: 1), timerCallback);
   }

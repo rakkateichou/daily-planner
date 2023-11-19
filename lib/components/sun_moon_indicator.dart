@@ -6,21 +6,16 @@ class SunMoonIndicator extends StatefulWidget {
   const SunMoonIndicator(
       {Key? key,
       required this.position,
-      this.indicatorType = IndicatorType.sun,
-      this.starsOpacity = 0.0,
       this.tasks = const [],
       this.cloudAppearance = const (0.3, 0.5),
-      this.draggableIndicator = false,
-      this.onIndicatorPosition, 
-      this.onDragStart, this.onDragEnd})
+      this.onIndicatorPosition,
+      this.onDragStart,
+      this.onDragEnd})
       : super(key: key);
 
   final double position;
-  final IndicatorType indicatorType;
-  final double starsOpacity;
   final List<double> tasks;
   final (double, double) cloudAppearance;
-  final bool draggableIndicator;
   final Function(double)? onIndicatorPosition;
   final VoidCallback? onDragStart;
   final VoidCallback? onDragEnd;
@@ -29,15 +24,80 @@ class SunMoonIndicator extends StatefulWidget {
   _SunMoonIndicatorState createState() => _SunMoonIndicatorState();
 }
 
-class _SunMoonIndicatorState extends State<SunMoonIndicator> {
+class _SunMoonIndicatorState extends State<SunMoonIndicator>
+    with SingleTickerProviderStateMixin {
   PictureInfo? moonDotsPI;
   PictureInfo? starsPI;
   PictureInfo? cloudPI;
 
+  Offset tapPosition = const Offset(0, 0);
+  Offset firstTapPosition = const Offset(0, 0);
+  bool isMoving = false;
+
+  bool legitDrag = false;
+
+  Offset initialIndicatorPosition = const Offset(0, 0);
+
+  void legitCallback(bool legit) {
+    legitDrag = legit;
+  }
+
+  void initialIndicatorPosCallback(Offset pos) {
+    if (legitDrag) return;
+    initialIndicatorPosition = pos;
+  }
+
+  late AnimationController animation;
+
+  double getStarsOpacityT(double t) {
+    var so = 0.0;
+    // if (t >= 0.7 && t < 0.9) {
+    //   so = (t - 0.7) / 0.2;
+    // } else if (t >= 0.0 && t < 0.2) {
+    //   so = 1 - t / 0.2;
+    if (t >= 0.7 && t <= 1.0 || t >= 0.0 && t < 0.2) {
+      so = 1.0;
+    } else {
+      so = 0.0;
+    }
+    return so;
+  }
+
+  double tFromTapPosition(Offset tap) {
+    return tap.dx / MediaQuery.of(context).size.width;
+  }
+
   @override
   void initState() {
     _loadSvg();
+    animation = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onDragEnd!();
+        isMoving = false;
+        animation.reset();
+      }
+    });
+    animation.addListener(() {
+      if (!legitDrag) return;
+      setState(() {
+        tapPosition = Offset.lerp(
+            tapPosition, initialIndicatorPosition, animation.value)!;
+      });
+      widget.onIndicatorPosition!(tFromTapPosition(tapPosition));
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    animation.dispose();
+    moonDotsPI?.picture.dispose();
+    starsPI?.picture.dispose();
+    super.dispose();
   }
 
   _loadSvg() async {
@@ -56,32 +116,70 @@ class _SunMoonIndicatorState extends State<SunMoonIndicator> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanUpdate: (details) {
-        if (widget.draggableIndicator) {
-          
-          widget.onIndicatorPosition!(details.globalPosition.dx / MediaQuery.of(context).size.width);
-        }
+        if (!legitDrag) return;
+        setState(() {
+          tapPosition = details.localPosition;
+        });
+        widget.onIndicatorPosition!(tFromTapPosition(tapPosition));
       },
-      onPanDown: (details) => widget.onDragStart!(),
-      onPanEnd: (details) => widget.onDragEnd!(),
-        child: CustomPaint(
-      painter: CurvePainter(widget.position, widget.indicatorType,
-          widget.starsOpacity, widget.tasks, moonDotsPI, starsPI),
-      size: Size(MediaQuery.of(context).size.width, 220),
-    ));
+      onPanDown: (details) => {
+        if (animation.isAnimating) animation.stop(),
+        setState(() {
+          firstTapPosition = details.localPosition;
+          tapPosition = details.localPosition;
+          isMoving = true;
+        }),
+        widget.onDragStart!(),
+      },
+      onPanEnd: (details) => {
+        animation.forward(from: 0.0),
+        //widget.onDragEnd!()
+      },
+      child: CustomPaint(
+        painter: CurvePainter(
+            widget.position,
+            getStarsOpacityT(
+                legitDrag ? tFromTapPosition(tapPosition) : widget.position),
+            widget.tasks,
+            moonDotsPI,
+            starsPI,
+            tapPosition,
+            firstTapPosition,
+            isMoving,
+            legitCallback,
+            initialIndicatorPosCallback),
+        size: Size(MediaQuery.of(context).size.width, 220),
+      ),
+    );
   }
 }
 
 class CurvePainter extends CustomPainter {
   final double t; // Add a t parameter
-  final IndicatorType indicatorType;
   final PictureInfo? moonDotsPI;
   final PictureInfo? starsPI;
   final double starsOpacity;
   final List<double> tasks;
   final dateTime = DateTime(1970, 0, 0, 0, 0);
 
-  CurvePainter(this.t, this.indicatorType, this.starsOpacity, this.tasks,
-      this.moonDotsPI, this.starsPI);
+  final Offset tapPosition;
+  final Offset firstTapPosition;
+  final bool isDraggedOrAnimated;
+
+  final Function(bool)? legitDragCallback;
+  final Function(Offset)? initialIndicatorCallback;
+
+  CurvePainter(
+      this.t,
+      this.starsOpacity,
+      this.tasks,
+      this.moonDotsPI,
+      this.starsPI,
+      this.tapPosition,
+      this.firstTapPosition,
+      this.isDraggedOrAnimated,
+      this.legitDragCallback,
+      this.initialIndicatorCallback);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -114,15 +212,7 @@ class CurvePainter extends CustomPainter {
     // Draw the path on the canvas
     canvas.drawPath(path, paint);
 
-    // Calculate the position of the circle on the curve
-    final circleX = (1 - t) * (1 - t) * startPoint.dx +
-        2 * (1 - t) * t * controlPoint.dx +
-        t * t * endPoint.dx;
-    final circleY = (1 - t) * (1 - t) * startPoint.dy +
-        2 * (1 - t) * t * controlPoint.dy +
-        t * t * endPoint.dy;
-
-    // draw dilimeter
+    // Draw dilimeter
     final t2 = 0.9;
 
     final circleX2 = (1 - t2) * (1 - t2) * startPoint.dx +
@@ -150,18 +240,44 @@ class CurvePainter extends CustomPainter {
         Offset(circleX2 + 10 - textPainter.width / 2,
             circleY2 - 15 - textPainter.height));
 
-    // Draw the moving circle
+    // Check if the indicator is a sun or a moon
+    var indicatorType = (t >= 0.85 ||
+            (isDraggedOrAnimated && tapPosition.dx / size.width > 0.85))
+        ? IndicatorType.moon
+        : IndicatorType.sun;
+
+    // Draw the sun
     final circlePaint = Paint()
       ..color = indicatorType == IndicatorType.sun
           ? const Color(0xFFFFB359)
           : const Color(0xFFB0B0AF);
 
-    // Apply a blur effect to the circle
+    // Apply a blur effect
     final blurSigma = 1.0;
     final blurFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
     circlePaint.maskFilter = blurFilter;
 
-    canvas.drawCircle(Offset(circleX, circleY), 35.0, circlePaint);
+    // Calculate the position of the circle on the curve
+    final circleX = (1 - t) * (1 - t) * startPoint.dx +
+        2 * (1 - t) * t * controlPoint.dx +
+        t * t * endPoint.dx;
+    final circleY = (1 - t) * (1 - t) * startPoint.dy +
+        2 * (1 - t) * t * controlPoint.dy +
+        t * t * endPoint.dy;
+
+    // Draw the circle on the canvas
+    if (isDraggedOrAnimated &&
+        firstTapPosition.dx > circleX - 35 &&
+        firstTapPosition.dx < circleX + 35 &&
+        firstTapPosition.dy > circleY - 35 &&
+        firstTapPosition.dy < circleY + 35) {
+      initialIndicatorCallback!(Offset(circleX, circleY));
+      canvas.drawCircle(tapPosition, 35.0, circlePaint);
+      legitDragCallback!(true);
+    } else {
+      canvas.drawCircle(Offset(circleX, circleY), 35.0, circlePaint);
+      legitDragCallback!(false);
+    }
 
     // Calculate positions of task dots
     final taskDots = <Offset>[];
@@ -185,10 +301,18 @@ class CurvePainter extends CustomPainter {
       canvas.drawCircle(taskDots[i], 5.0, taskPaint);
     }
 
+    // Draw moon dots
     if (indicatorType == IndicatorType.moon && moonDotsPI != null) {
-      canvas.drawImage(moonDotsPI!.picture.toImageSync(50, 50),
-          Offset(circleX - 20, circleY - 20), paint);
+      if (isDraggedOrAnimated) {
+        canvas.drawImage(moonDotsPI!.picture.toImageSync(50, 50),
+            Offset(tapPosition.dx - 20, tapPosition.dy - 20), paint);
+      } else {
+        canvas.drawImage(moonDotsPI!.picture.toImageSync(50, 50),
+            Offset(circleX - 20, circleY - 20), paint);
+      }
     }
+
+    // Draw stars
     if (starsOpacity > 0 && starsPI != null) {
       canvas.drawPicture(starsPI!.picture);
     }
@@ -196,7 +320,7 @@ class CurvePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }
 
