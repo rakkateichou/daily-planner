@@ -1,0 +1,9 @@
+{
+    "helloWorld": "Hello World!",
+    "@helloWorld": {
+      "description": "The conventional newborn programmer greeting"
+    },
+    "tasksStringComplete": "You completed all tasks today",
+    "tasksStringOne": "You have 1 task left to complete today",
+    "tasksStringIncomplete": "You have {num} tasks left to complete today"
+  }

@@ -1,0 +1,6 @@
+{
+    "helloWorld": "Привет, мир!",
+    "tasksStringComplete": "Вы выполнили все задачи на сегодня!",
+    "tasksStringOne": "У вас осталась одна задача на сегодня",
+    "tasksStringIncomplete": "У вас осталось {num} задач на сегодня"
+}

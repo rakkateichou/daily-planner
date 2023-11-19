@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/models/task.dart';
 
 class Utils {
