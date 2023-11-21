@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditNewPageLayout extends StatefulWidget {
   const EditNewPageLayout(
@@ -107,11 +108,11 @@ class _EditNewPageLayoutState extends State<EditNewPageLayout> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const SizedBox(
+              SizedBox(
                 width: 141,
                 height: 72,
                 child: Text(
-                  "What time do you want to put the task on?",
+                  AppLocalizations.of(context)!.taskTime,
                   style: MyTextStyles.taskEditingStyle,
                 ),
               ),
@@ -190,9 +191,9 @@ class NoteLikeTextField extends StatelessWidget {
             maxLength: 450,
             style: MyTextStyles.taskEditingStyle,
             scrollPhysics: const NeverScrollableScrollPhysics(),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: 'Type your task here',
+              hintText: AppLocalizations.of(context)!.typeTaskHere,
             ),
             // space between lines
             strutStyle: const StrutStyle(

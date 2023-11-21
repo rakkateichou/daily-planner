@@ -2,5 +2,22 @@
     "helloWorld": "Привет, мир!",
     "tasksStringComplete": "Вы выполнили все задачи на сегодня!",
     "tasksStringOne": "У вас осталась одна задача на сегодня",
-    "tasksStringIncomplete": "У вас осталось {num} задач на сегодня"
+    "tasksStringIncomplete": "У вас осталось {num} задач на сегодня",
+    "addNewTaskQ": "Добавить новую задачу?",
+    "taskDeleted": "Задача удалена",
+    "undo": "Отменить",
+    "typeTaskHere": "Напишите задачу здесь",
+    "taskTime": "Время и дата задачи",
+    "tasksTitle": "Задачи",
+    "pastTasksTitle": "Прошедшие задачи",
+    "emptyTaskContent": "*Пусто* ;)",
+    "editTaskTitle": "Редактировать задачу",
+    "alertDialogDeleteTitle": "Удалить {num} задач?",
+    "alertDialogDeleteMessage": "Вы уверены, что хотите удалить {num} задач?",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "selectedTasks": "{num, plural, =1 {Выбрана 1 задача} other {Выбрано {num} задач}}",
+    "deletedTasks": "{num, plural, =1 {Удалена 1 задача} other {Удалено {num} задач}}",
+    "hintSearch": "Поиск"
+    
 }

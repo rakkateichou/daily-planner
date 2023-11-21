@@ -5,6 +5,8 @@ import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class TaskLayout extends StatefulWidget {
   const TaskLayout({Key? key}) : super(key: key);
 
@@ -58,9 +60,9 @@ class _TaskLayoutState extends State<TaskLayout> {
                     db.removeTask(tasks[index]);
                   }),
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Task deleted"),
+                    content: Text(AppLocalizations.of(context)!.taskDeleted),
                     action: SnackBarAction(
-                      label: 'Undo',
+                      label: AppLocalizations.of(context)!.undo,
                       onPressed: () {
                         setState(() {
                           db.restoreLastDeleteTask();
@@ -87,8 +89,8 @@ class _TaskLayoutState extends State<TaskLayout> {
             bottom: 84,
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: const Text(
-                "Add new task?",
+              child: Text(
+                AppLocalizations.of(context)!.addNewTaskQ,
                 textAlign: TextAlign.center,
                 style: MyTextStyles.addNewTaskStyle,
               ),

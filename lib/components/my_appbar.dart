@@ -7,6 +7,8 @@ import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   const MyAppBar({Key? key, required this.timeString}) : super(key: key);
 
@@ -57,7 +59,7 @@ class _MyAppBarState extends State<MyAppBar> {
               title: sc.selectedTasks.length == 1
                   ? Text(sc.selectedTasks[0].content,
                       style: MyTextStyles.homeMainStyle)
-                  : Text("${sc.selectedTasks.length} Tasks Selected",
+                  : Text(AppLocalizations.of(context)!.selectedTasks(sc.selectedTasks.length),
                       style: MyTextStyles.homeMainStyle),
               actions: [
                 if (sc.selectedTasks.length == 1)
@@ -72,18 +74,18 @@ class _MyAppBarState extends State<MyAppBar> {
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     showDialog(context: context, builder:(context) => AlertDialog(
-                      title: Text("Delete ${sc.selectedTasks.length} Tasks?"),
-                      content: Text("Are you sure you want to delete ${sc.selectedTasks.length} tasks?"),
+                      title: Text(AppLocalizations.of(context)!.alertDialogDeleteTitle(sc.selectedTasks.length)),
+                      content: Text(AppLocalizations.of(context)!.alertDialogDeleteMessage(sc.selectedTasks.length)),
                       actions: [
                         TextButton(onPressed: () {
                           Navigator.pop(context);
-                        }, child: Text("Cancel")),
+                        }, child: Text(AppLocalizations.of(context)!.cancel)),
                         TextButton(onPressed: () {
                           db.removeTasks(sc.selectedTasks);
                           sc.selectedTasks.clear();
                           sc.isSelectingMode = false;
                           Navigator.pop(context);
-                        }, child: Text("Delete"))
+                        }, child: Text(AppLocalizations.of(context)!.delete))
                       ],
                     ),);
                   },

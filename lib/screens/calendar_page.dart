@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../components/calendar_app_bar.dart';
 import '../models/cal_list_type.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
@@ -53,8 +55,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     : const Size.fromHeight(56.0),
                 child: CalendarAppBar(
                     title: type == CalListType.nextTasks
-                        ? "Tasks"
-                        : "Past Tasks")),
+                        ? AppLocalizations.of(context)!.tasksTitle
+                        : AppLocalizations.of(context)!.pastTasksTitle)),
             body: CalList(type: type)),
       ),
     );

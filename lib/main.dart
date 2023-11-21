@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:daily_planner/controllers/color_controller.dart';
@@ -7,6 +8,9 @@ import 'package:daily_planner/screens/calendar_page.dart';
 import 'package:daily_planner/screens/edit_task_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/intl_standalone.dart';
 
 import 'screens/home_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,6 +20,8 @@ void main() async {
   await DBController.getInstance().initialize();
   await ColorController.getInstance().initialize();
   await SelectingController.getInstance().initialize();
+  await initializeDateFormatting(Platform.localeName, null);
+  Intl.defaultLocale = await findSystemLocale();
   runApp(const MyApp());
 }
 

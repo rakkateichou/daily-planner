@@ -5,6 +5,8 @@ import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/screens/edit_task_page.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class CalendarAppBar extends StatefulWidget {
   CalendarAppBar({
     super.key,
@@ -48,7 +50,8 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
     var selectLength = slc.selectedTasks.length;
     return AppBar(
       backgroundColor: cc.primaryColor,
-      title: slc.isSelectingMode ? Text("${selectLength} item${selectLength == 1 ? '' : 's'} selected") : Text(widget.title),
+      title: slc.isSelectingMode ? Text(AppLocalizations.of(context)!.selectedTasks(selectLength)) : Text(widget.title),
+      // title: slc.isSelectingMode ? Text("${selectLength} item${selectLength == 1 ? '' : 's'} selected") : Text(widget.title),
       // search text field
       bottom: shc.isSearching
           ? PreferredSize(
@@ -58,8 +61,8 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
                 child: TextField(
                   autofocus: true,
                   decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintText: AppLocalizations.of(context)!.hintSearch,
+                    hintStyle: const TextStyle(color: Colors.white),
                     border: InputBorder.none,
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -97,7 +100,7 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      "${slc.selectedTasks.length} task${slc.selectedTasks.length > 1 ? "s" : ""} deleted"),
+                      AppLocalizations.of(context)!.deletedTasks(slc.selectedTasks.length)),
                   duration: const Duration(seconds: 2),
                 ),
               );

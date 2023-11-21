@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 
 import '../models/cal_list_type.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class CalList extends StatefulWidget {
   const CalList({Key? key, required this.type}) : super(key: key);
 
@@ -110,7 +112,7 @@ class _CalListState extends State<CalList> {
             Navigator.pushNamed(context, CalendarPage.routeName,
                 arguments: CalListType.lastTasks);
           },
-          title: const Text('Past tasks'),
+          title: Text(AppLocalizations.of(context)!.pastTasksTitle),
         ),
       );
     } else if (index < widgets.length + 2) {

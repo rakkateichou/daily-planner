@@ -3,6 +3,8 @@ import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class TaskItem extends StatefulWidget {
   const TaskItem(
       {Key? key,
@@ -76,7 +78,7 @@ class _TaskItemState extends State<TaskItem> {
                     child: widget.task.content.isNotEmpty
                         ? Text(widget.task.content,
                             style: MyTextStyles.taskTextStyle)
-                        : Text("*empty* ;)", style: MyTextStyles.taskTextStyle)),
+                        : Text(AppLocalizations.of(context)!.emptyTaskContent, style: MyTextStyles.taskTextStyle)),
               ),
             ),
           ),

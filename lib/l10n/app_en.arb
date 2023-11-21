@@ -5,5 +5,21 @@
     },
     "tasksStringComplete": "You completed all tasks today",
     "tasksStringOne": "You have 1 task left to complete today",
-    "tasksStringIncomplete": "You have {num} tasks left to complete today"
+    "tasksStringIncomplete": "You have {num} tasks left to complete today",
+    "addNewTaskQ": "Add a new task?",
+    "taskDeleted": "Task deleted",
+    "undo": "Undo",
+    "typeTaskHere": "Type your task here",
+    "taskTime": "What time do you want to put the task on?",
+    "tasksTitle": "Tasks",
+    "pastTasksTitle": "Past Tasks",
+    "emptyTaskContent": "*empty* ;)",
+    "editTaskTitle": "Edit Task",
+    "alertDialogDeleteTitle": "Delete {num} tasks?",
+    "alertDialogDeleteMessage": "Are you sure you want to delete {num} tasks?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "selectedTasks": "{num, plural, =1 {1 item selected} other {{num} items selected}}",
+    "deletedTasks": "{num, plural, =1 {1 task deleted} other {{num} tasks deleted}}",
+    "hintSearch": "Search"
   }

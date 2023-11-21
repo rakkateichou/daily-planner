@@ -82,9 +82,13 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 
   void setIndicator(DateTime now) {
-    setState(() {
-      _objectPosition = Utils.getObjectPosition(now);
-    });
+    try { // i dont know why but it throws an error sometimes
+      setState(() {
+        _objectPosition = Utils.getObjectPosition(now);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

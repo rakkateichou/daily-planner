@@ -4,6 +4,8 @@ import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class EditTaskPage extends StatefulWidget {
   const EditTaskPage({Key? key}) : super(key: key);
 
@@ -38,7 +40,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
         child: const Icon(Icons.save),
       ),
       appBar: AppBar(
-        title: const Text("Edit Task"),
+        title: Text(AppLocalizations.of(context)!.editTaskTitle),
         backgroundColor: cc.primaryColor,
         actions: [
           IconButton(
