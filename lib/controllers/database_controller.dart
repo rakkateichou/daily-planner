@@ -1,3 +1,4 @@
+import 'package:daily_planner/controllers/notification_controller.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -6,6 +7,8 @@ class DBController extends ChangeNotifier{
   static DBController? _instance;
   late Box<Task> box; // Change this to your specific Hive box
   Task? lastDeleteTask;
+
+  List<Task> todayTasks = [];
 
   DBController._();
 
@@ -20,7 +23,9 @@ class DBController extends ChangeNotifier{
   }
 
   List<Task> getTasksForToday() {
-    return getTasksForDay(DateTime.now());
+    todayTasks = getTasksForDay(DateTime.now());
+    notifyListeners();
+    return todayTasks;
   }
 
   List<Task> getTasksForDay(DateTime day) {
@@ -96,25 +101,29 @@ class DBController extends ChangeNotifier{
 
   int addTask(Task task) {
     box.put(task.id, task);
+    NotificationController.scheduleNotification(task, task.dateTime);
     notifyListeners();
     return task.id;
   }
 
   void updateTask(Task task) {
-    print(task.content);
     box.put(task.id, task);
+    NotificationController.cancelNotification(task.id);
+    NotificationController.scheduleNotification(task, task.dateTime);
     notifyListeners();
   }
 
   void removeTask(Task task) {
     lastDeleteTask = task;
     box.delete(task.id);
+    NotificationController.cancelNotification(task.id);
     notifyListeners();
   }
 
   void removeTasks(List<Task> tasks) {
     tasks.forEach((element) {
       box.delete(element.id);
+      NotificationController.cancelNotification(element.id);
     });
     notifyListeners();
   }
@@ -122,6 +131,7 @@ class DBController extends ChangeNotifier{
   void restoreLastDeleteTask() {
     if (lastDeleteTask != null) {
       box.put(lastDeleteTask!.id, lastDeleteTask!);
+      NotificationController.scheduleNotification(lastDeleteTask!, lastDeleteTask!.dateTime);
     }
     notifyListeners();
   }

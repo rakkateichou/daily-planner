@@ -5,6 +5,7 @@ import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -69,25 +70,34 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   void setTasksStatus(DateTime now) {
     var tasks = db.getTasksForToday();
-    setState(() {
-      if (tasks.isEmpty) {
-        _tasksString = AppLocalizations.of(context)!.tasksStringComplete;
-      } else if (tasks.length == 1) {
-        _tasksString = AppLocalizations.of(context)!.tasksStringOne;
-      } else {
-        _tasksString =
-            AppLocalizations.of(context)!.tasksStringIncomplete(tasks.length);
+    try {
+      setState(() {
+        if (tasks.isEmpty) {
+          _tasksString = AppLocalizations.of(context)!.tasksStringComplete;
+        } else if (tasks.length == 1) {
+          _tasksString = AppLocalizations.of(context)!.tasksStringOne;
+        } else {
+          _tasksString =
+              AppLocalizations.of(context)!.tasksStringIncomplete(tasks.length);
+        }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
       }
-    });
+    }
   }
 
   void setIndicator(DateTime now) {
-    try { // i dont know why but it throws an error sometimes
+    try {
+      // i dont know why but it throws an error sometimes
       setState(() {
         _objectPosition = Utils.getObjectPosition(now);
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

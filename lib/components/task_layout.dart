@@ -3,6 +3,7 @@ import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -21,9 +22,15 @@ class _TaskLayoutState extends State<TaskLayout> {
   List<Task> tasks = [];
 
   void _listener() {
-    setState(() {
-      tasks = db.getTasksForToday();
-    });
+    try {
+      setState(() {
+        tasks = db.todayTasks;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 
   @override

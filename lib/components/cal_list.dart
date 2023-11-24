@@ -42,6 +42,12 @@ class _CalListState extends State<CalList> {
     widgets = generateNextPage();
   }
 
+  void _dbListener() {
+    tasks = [];
+    page = 0;
+    widgets = generateNextPage();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +62,7 @@ class _CalListState extends State<CalList> {
       }
     });
     searchc.addListener(_searchListener);
-    db.addListener(_searchListener);
+    db.addListener(_dbListener);
     widgets = generateNextPage();
   }
 
@@ -64,6 +70,7 @@ class _CalListState extends State<CalList> {
   void dispose() {
     scrollController.dispose();
     searchc.removeListener(_searchListener);
+    db.removeListener(_searchListener);
     super.dispose();
   }
 

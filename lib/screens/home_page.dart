@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 
 import '../components/home_layout.dart';
 import '../components/task_layout.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,7 +27,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late String _timeString;
 
-
   bool _isEditing = false;
 
   late Task _lastTaskSaved;
@@ -35,7 +35,6 @@ class _HomePageState extends State<HomePage> {
   DBController db = DBController.getInstance();
   SelectingController sc = SelectingController.getInstance();
   late EditingController ec;
-
 
   late DateTime now;
   late Timer timer;
@@ -51,9 +50,16 @@ class _HomePageState extends State<HomePage> {
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _tick());
     now = DateTime.now();
     _timeString = _formatDateTime(now);
-    _lastTaskSaved =
-        Task(id: 0, content: "Dummy Task", dateTime: DateTime.now());
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _lastTaskSaved = Task(
+        id: 0,
+        content: AppLocalizations.of(context)!.emptyTaskContent,
+        dateTime: DateTime.now());
   }
 
   @override
@@ -121,7 +127,8 @@ class _HomePageState extends State<HomePage> {
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 height: _isEditing
-                    ? (screenHeight - MediaQuery.of(context).viewInsets.bottom) *
+                    ? (screenHeight -
+                            MediaQuery.of(context).viewInsets.bottom) *
                         0.87
                     : screenHeight * 0.61,
                 margin: _isEditing
