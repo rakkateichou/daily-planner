@@ -20,8 +20,10 @@ Made using Flutter
 ### Screenshots
 
 <b>Tracking of progress</b>
+<br/>
 <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
 </div>
+<b>Tracking of progress</b>
 <br/>
 
 <b>Managing tasks</b>
@@ -29,7 +31,13 @@ Made using Flutter
 <br/>
 
 <b>Notifications</b>
+<br/>
+
+<b>Notifications</b>
 <img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
+<br/>
+
+<b>Support of different languages and locales</b>
 <br/>
 
 <b>Support of different languages and locales</b>
