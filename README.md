@@ -19,53 +19,16 @@ Made using Flutter
 
 ### Screenshots
 
-<div style="display: flex; flex-direction: column; align-items: left; justify-content: center; text-align: center;">
-  <div style="display: flex; align-items: center; margin-bottom: 20px;">
-    <div>
-      <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
-    </div>
-
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <b>Tracking of progress</b>
-    </div>
-  </div>
-
-  <div style="display: flex; align-items: center; margin-bottom: 20px;">
-    <div>
-      <img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
-    </div>
-
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <b>Managing tasks</b>
-  </div>
-  </div>
-
-  <div style="display: flex; align-items: center;">
-    <div>
-      <img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
-    </div>
-
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <b>Notifications</b>
-  </div>
-  </div>
-
-  <div style="display: flex; align-items: center; margin-bottom: 20px;">
-    <div>
-      <img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
-    </div>
-
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <b>Support of different languages and locales</b>
-  </div>
-  </div>
-
+<img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
 </div>
+<b>Tracking of progress</b>
+
+<img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
+<b>Managing tasks</b>
 
 
+<img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
+<b>Notifications</b>
 
-
-
-
-
-
+<img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
+<b>Support of different languages and locales</b>
