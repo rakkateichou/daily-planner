@@ -21,24 +21,23 @@ Made using Flutter
 
 <b>Tracking of progress</b>
 <br/>
+<br/>
 <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
 </div>
+<b>Tracking of progress</b>
 <b>Tracking of progress</b>
 <br/>
 
 <b>Managing tasks</b>
+<br/>
 <img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
 <br/>
 
 <b>Notifications</b>
 <br/>
-
-<b>Notifications</b>
 <img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
 <br/>
 
 <b>Support of different languages and locales</b>
 <br/>
-
-<b>Support of different languages and locales</b>
 <img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
