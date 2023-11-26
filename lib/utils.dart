@@ -28,10 +28,10 @@ class Utils {
 
   static List<double> calculateOffsetsFromTasks(List<Task> tasks) {
     List<double> offsets = [];
-    tasks.forEach((element) {
+    for (var element in tasks) {
       var offset = getObjectPosition(element.dateTime);
       offsets.add(offset);
-    });
+    }
     return offsets;
   }
 

@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
         },
         child: Stack(
           children: [
-            ColorfulBackground(),
+            const ColorfulBackground(),
             Stack(
               children: [
                 if (!_isEditing) const HomeLayout(),

@@ -14,11 +14,6 @@ class SearchingController extends ChangeNotifier {
     return _instance!;
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void toggleSeaching() {
     if (isSearching) {
       query = "";

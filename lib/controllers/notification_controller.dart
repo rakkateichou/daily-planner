@@ -2,9 +2,7 @@ import 'package:daily_planner/main.dart';
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/navigator_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,7 +18,6 @@ class NotificationController {
 
   static Future<void> scheduleNotification(
       Task task, DateTime scheduledTime) async {
-    print(scheduledTime.toString());
     flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()

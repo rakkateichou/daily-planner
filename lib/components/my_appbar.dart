@@ -15,13 +15,13 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String timeString;
 
   @override
-  _MyAppBarState createState() => _MyAppBarState();
+  MyAppBarState createState() => MyAppBarState();
 
   @override
   Size get preferredSize => const Size(double.infinity, 83);
 }
 
-class _MyAppBarState extends State<MyAppBar> {
+class MyAppBarState extends State<MyAppBar> {
   SelectingController sc = SelectingController.getInstance();
   ColorController cc = ColorController.getInstance();
   DBController db = DBController.getInstance();
@@ -64,14 +64,14 @@ class _MyAppBarState extends State<MyAppBar> {
               actions: [
                 if (sc.selectedTasks.length == 1)
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                     onPressed: () {
                       ec.startEditing(sc.selectedTasks[0]);
                       sc.quitSelecting();
                     },
                   ),
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     showDialog(context: context, builder:(context) => AlertDialog(
                       title: Text(AppLocalizations.of(context)!.alertDialogDeleteTitle(sc.selectedTasks.length)),

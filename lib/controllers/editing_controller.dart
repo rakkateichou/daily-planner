@@ -15,11 +15,6 @@ class EditingController extends ChangeNotifier {
     return _instance!;
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void toggleEditing() {
     if (isEditing) {
       taskToEdit = null;

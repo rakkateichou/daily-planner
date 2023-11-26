@@ -37,7 +37,8 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
   @override
   void initState() {
     sc = SelectingController.getInstance();
-    db = DBController.getInstance()..addListener(_listener);
+    db = DBController.getInstance()
+        ..addListener(_listener);
     tasks = db.getTasksForToday();
     super.initState();
   }
@@ -79,13 +80,12 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
           child: ListView.builder(
             itemCount: tasks.length,
             padding: const EdgeInsets.only(bottom: 64, top: 20),
-            itemBuilder: (context, index) {
+            itemBuilder: (itemContext, index) {
               return Dismissible(
                 key: ValueKey<int>(tasks[index].id),
                 onDismissed: (direction) => {
-                  setState(() {
-                    db.removeTask(tasks[index]);
-                  }),
+                  db.removeTask(tasks[index]),
+                  tasks.removeAt(index),
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(AppLocalizations.of(context)!.taskDeleted),
                     action: SnackBarAction(

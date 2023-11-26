@@ -20,12 +20,7 @@ class SelectingController extends ChangeNotifier {
     isSelectingMode = false;
     selectedTasks = [];
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  
   void quitSelecting() {
     isSelectingMode = false;
     selectedTasks = [];

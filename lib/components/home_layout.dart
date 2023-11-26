@@ -6,7 +6,6 @@ import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/navigator_service.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

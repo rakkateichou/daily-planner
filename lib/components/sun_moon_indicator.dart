@@ -21,10 +21,10 @@ class SunMoonIndicator extends StatefulWidget {
   final VoidCallback? onDragEnd;
 
   @override
-  _SunMoonIndicatorState createState() => _SunMoonIndicatorState();
+  SunMoonIndicatorState createState() => SunMoonIndicatorState();
 }
 
-class _SunMoonIndicatorState extends State<SunMoonIndicator>
+class SunMoonIndicatorState extends State<SunMoonIndicator>
     with SingleTickerProviderStateMixin {
   PictureInfo? moonDotsPI;
   PictureInfo? starsPI;
@@ -213,7 +213,7 @@ class CurvePainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Draw dilimeter
-    final t2 = 0.9;
+    const t2 = 0.9;
 
     final circleX2 = (1 - t2) * (1 - t2) * startPoint.dx +
         2 * (1 - t2) * t2 * controlPoint.dx +
@@ -253,8 +253,8 @@ class CurvePainter extends CustomPainter {
           : const Color(0xFFB0B0AF);
 
     // Apply a blur effect
-    final blurSigma = 1.0;
-    final blurFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
+    const blurSigma = 1.0;
+    const blurFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
     circlePaint.maskFilter = blurFilter;
 
     // Calculate the position of the circle on the curve

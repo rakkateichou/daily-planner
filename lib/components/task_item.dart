@@ -23,10 +23,10 @@ class TaskItem extends StatefulWidget {
   final VoidCallback? onLongPress;
 
   @override
-  _TaskItemState createState() => _TaskItemState();
+  TaskItemState createState() => TaskItemState();
 }
 
-class _TaskItemState extends State<TaskItem> {
+class TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
     var time = DateFormat.jm().format(widget.task.dateTime);

@@ -121,10 +121,10 @@ class DBController extends ChangeNotifier{
   }
 
   void removeTasks(List<Task> tasks) {
-    tasks.forEach((element) {
+    for (var element in tasks) {
       box.delete(element.id);
       NotificationController.cancelNotification(element.id);
-    });
+    }
     notifyListeners();
   }
 

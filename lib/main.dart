@@ -39,7 +39,7 @@ Future<void> initNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher_foreground');
 
-  final InitializationSettings initializationSettings = InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
 

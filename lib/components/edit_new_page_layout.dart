@@ -1,6 +1,5 @@
 import 'package:daily_planner/models/task.dart';
 import 'package:daily_planner/styles/text_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -19,10 +18,10 @@ class EditNewPageLayout extends StatefulWidget {
   final VoidCallback popCallback;
 
   @override
-  _EditNewPageLayoutState createState() => _EditNewPageLayoutState();
+  EditNewPageLayoutState createState() => EditNewPageLayoutState();
 }
 
-class _EditNewPageLayoutState extends State<EditNewPageLayout> {
+class EditNewPageLayoutState extends State<EditNewPageLayout> {
   late TextEditingController _controller;
   late DateTime _dateTime;
   late String _timeText;
@@ -103,7 +102,7 @@ class _EditNewPageLayoutState extends State<EditNewPageLayout> {
       },
       child: Column(
         children: [
-          Container(
+          SizedBox(
               height: 575, child: NoteLikeTextField(controller: _controller)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -212,7 +211,7 @@ class NoteLikeTextField extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width,
               height: 1,
-              color: Color(0xA6000000),
+              color: const Color(0xA6000000),
             ),
           ),
       ],

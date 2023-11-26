@@ -10,12 +10,12 @@ class EditTaskPage extends StatefulWidget {
   const EditTaskPage({Key? key}) : super(key: key);
 
   @override
-  _EditTaskPageState createState() => _EditTaskPageState();
+  EditTaskPageState createState() => EditTaskPageState();
 
   static const String routeName = '/edit_task';
 }
 
-class _EditTaskPageState extends State<EditTaskPage> {
+class EditTaskPageState extends State<EditTaskPage> {
   final db = DBController.getInstance();
   final cc = ColorController.getInstance();
 

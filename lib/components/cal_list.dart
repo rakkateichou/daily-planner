@@ -18,10 +18,10 @@ class CalList extends StatefulWidget {
   final CalListType type;
 
   @override
-  _CalListState createState() => _CalListState();
+  CalListState createState() => CalListState();
 }
 
-class _CalListState extends State<CalList> {
+class CalListState extends State<CalList> {
   static const pageLength = 10;
 
   final db = DBController.getInstance();

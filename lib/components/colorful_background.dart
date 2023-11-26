@@ -3,7 +3,7 @@ import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:flutter/material.dart';
 
 class ColorfulBackground extends StatefulWidget {
-  ColorfulBackground({Key? key})
+  const ColorfulBackground({Key? key})
       : super(key: key);
 
   @override
