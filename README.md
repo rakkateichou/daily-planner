@@ -4,6 +4,8 @@
 
 Made using Flutter
 
-<div>
-<img src="" alt="Adding a task" width="200"/>
+<div style="display: flex; gap: 2rem;">
+  <img src="https://github.com/rakkateichou/daily-planner/blob/main/screenshots/first.gif" alt="Adding a task" width="200" />
+  <img src="https://github.com/rakkateichou/daily-planner/blob/main/screenshots/second.gif" alt="Deleting and editing" width="200" />
+  <img src="https://github.com/rakkateichou/daily-planner/blob/main/screenshots/third.gif" alt="A fun feature" width="200" />
 </div>
