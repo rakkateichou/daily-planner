@@ -22,13 +22,12 @@ Made using Flutter
 <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
 </div>
 <b>Tracking of progress</b>
-
+&nbsp;
 <img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
 <b>Managing tasks</b>
-
-
+&nbsp;
 <img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
 <b>Notifications</b>
-
+&nbsp;
 <img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
 <b>Support of different languages and locales</b>
