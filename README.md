@@ -19,15 +19,18 @@ Made using Flutter
 
 ### Screenshots
 
+<b>Tracking of progress</b>
 <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
 </div>
-<b>Tracking of progress</b>
 <br/>
-<img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
+
 <b>Managing tasks</b>
+<img src="screenshots/s2.png" alt="Managing tasks" style="margin-right: 20px;" />
 <br/>
-<img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
+
 <b>Notifications</b>
+<img src="screenshots/s3.png" alt="Notifications" style="margin-right: 20px;" />
 <br/>
-<img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
+
 <b>Support of different languages and locales</b>
+<img src="screenshots/s4.png" alt="Support of different locales" style="margin-right: 20px;" />
