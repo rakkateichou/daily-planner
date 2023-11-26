@@ -11,7 +11,7 @@ Made using Flutter
 - 🌐 Support of different languages and locales
 
 ### Showcase
-<div style="display: flex; justify-content: space-evenly; align-items: center;">
+<div style="display: flex; gap: 2rem; align-items: center;">
   <div>
     <img src="screenshots/first.gif" alt="Adding a task" width="200" height="420" />
     <p style="text-align: center; font-weight: bold;">Adding a Task</p>
