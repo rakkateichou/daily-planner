@@ -12,18 +12,9 @@ Made using Flutter
 
 ### Showcase
 <div style="display: flex; gap: 2rem; align-items: center;">
-  <div>
-    <img src="screenshots/first.gif" alt="Adding a task" width="200" height="420" />
-    <p style="text-align: center; font-weight: bold;">Adding a Task</p>
-  </div>
-  <div>
-    <img src="screenshots/second.gif" alt="Deleting and Editing" width="200" height="420" />
-    <p style="text-align: center; font-weight: bold;">Deleting and Editing</p>
-  </div>
-  <div>
-    <img src="screenshots/third.gif" alt="A Fun Feature" width="200" height="420" />
-    <p style="text-align: center; font-weight: bold;">A Fun Feature</p>
-  </div>
+  <img src="screenshots/first.gif" alt="Adding a task" width="200" height="420" />
+  <img src="screenshots/second.gif" alt="Deleting and Editing" width="200" height="420" />
+  <img src="screenshots/third.gif" alt="A Fun Feature" width="200" height="420" />
 </div>
 
 ### Screenshots
@@ -35,7 +26,7 @@ Made using Flutter
     </div>
 
   <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <p style="font-weight: bold;">Tracking of progress</p>
+    <b>Tracking of progress</b>
     </div>
   </div>
 
@@ -45,7 +36,7 @@ Made using Flutter
     </div>
 
   <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <p style="font-weight: bold;">Managing tasks</p>
+    <b>Managing tasks</b>
   </div>
   </div>
 
@@ -55,7 +46,7 @@ Made using Flutter
     </div>
 
   <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <p style="font-weight: bold;">Notifications</p>
+    <b>Notifications</b>
   </div>
   </div>
 
@@ -65,7 +56,7 @@ Made using Flutter
     </div>
 
   <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <p style="font-weight: bold;">Support of different languages an locales</p>
+    <b>Support of different languages and locales</b>
   </div>
   </div>
 
