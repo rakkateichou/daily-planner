@@ -63,6 +63,21 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       initialRoute: HomePage.routeName,
+      navigatorObservers: [NavigatorService.routeObserver],
+      // onGenerateRoute: (settings) {
+      //   // maintainState: false,
+
+      //   return PageRouteBuilder(
+      //     settings: settings,
+      //     maintainState: false,
+      //     pageBuilder: (context, animation, secondaryAnimation) {
+      //       return FadeTransition(
+      //         opacity: animation,
+      //         child: const HomePage(),
+      //       );
+      //     },
+      //   );
+      // },
       routes: {
         HomePage.routeName: (context) => const HomePage(),
         CalendarPage.routeName: (context) => const CalendarPage(),

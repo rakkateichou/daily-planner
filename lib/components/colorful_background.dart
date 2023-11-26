@@ -15,16 +15,23 @@ class _ColorfulBackgroundState extends State<ColorfulBackground> {
   late ColorController colorc;
   Color color = Colors.white;
 
+  void _colorListener() {
+    setState(() {
+      color = colorc.primaryColor;
+    });
+  }
+
   @override
   void initState() {
     colorc = ColorController.getInstance();
-    colorc.addListener(() {
-      // print(colorc.primaryColor);
-      setState(() {
-        color = colorc.primaryColor;
-      });
-    });
+    colorc.addListener(_colorListener);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    colorc.removeListener(_colorListener);
+    super.dispose();
   }
 
   @override

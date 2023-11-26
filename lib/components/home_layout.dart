@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:daily_planner/components/sun_moon_indicator.dart';
 import 'package:daily_planner/controllers/color_controller.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
+import 'package:daily_planner/navigator_service.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:daily_planner/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,7 @@ class HomeLayout extends StatefulWidget {
   State<HomeLayout> createState() => _HomeLayoutState();
 }
 
-class _HomeLayoutState extends State<HomeLayout> {
+class _HomeLayoutState extends State<HomeLayout> with RouteAware {
   late String _tasksString;
   late double _objectPosition;
 
@@ -29,27 +30,6 @@ class _HomeLayoutState extends State<HomeLayout> {
   @override
   void initState() {
     super.initState();
-    // _tasksString = "Counting your to-do's for today";
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // put it here because in initState it throws an error
-
-    // When an inherited widget changes,
-    // for example if the value of
-    // Theme.of() changes, its dependent
-    // widgets are rebuilt. If the
-    // dependent widget's reference to
-    // the inherited widget is in a
-    // constructor or an initState()
-    // method, then the rebuilt
-    // dependent widget will not reflect
-    // the changes in the inherited
-    // widget.
-
     _update = () {
       var now = DateTime.now();
       setIndicator(now);
@@ -63,42 +43,49 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    NavigatorService.routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPushNext() {
+    timer.cancel();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _update());
+    super.didPopNext();
+  }
+
+  @override
   void dispose() {
+    NavigatorService.routeObserver.unsubscribe(this);
     timer.cancel();
     super.dispose();
   }
 
   void setTasksStatus(DateTime now) {
     var tasks = db.getTasksForToday();
-    try {
-      setState(() {
-        if (tasks.isEmpty) {
-          _tasksString = AppLocalizations.of(context)!.tasksStringComplete;
-        } else if (tasks.length == 1) {
-          _tasksString = AppLocalizations.of(context)!.tasksStringOne;
-        } else {
-          _tasksString =
-              AppLocalizations.of(context)!.tasksStringIncomplete(tasks.length);
-        }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
+    var currentContext = NavigatorService.navigatorKey.currentContext!;
+    setState(() {
+      if (tasks.isEmpty) {
+        _tasksString = AppLocalizations.of(currentContext)!.tasksStringComplete;
+      } else if (tasks.length == 1) {
+        _tasksString = AppLocalizations.of(currentContext)!.tasksStringOne;
+      } else {
+        _tasksString =
+            AppLocalizations.of(currentContext)!.tasksStringIncomplete(tasks.length);
       }
-    }
+    });
   }
 
   void setIndicator(DateTime now) {
-    try {
-      // i dont know why but it throws an error sometimes
-      setState(() {
-        _objectPosition = Utils.getObjectPosition(now);
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
+    setState(() {
+      _objectPosition = Utils.getObjectPosition(now);
+    });
   }
 
   @override

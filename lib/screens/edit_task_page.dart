@@ -60,9 +60,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
           child: EditNewPageLayout(
             taskToEdit: task,
             taskCallback: (task) => {
-              setState(() {
-                taskToEdit = task;
-              })
+                taskToEdit = task
             },
             popCallback: () => {Navigator.pop(context)},
           ),

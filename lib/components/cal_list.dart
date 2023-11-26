@@ -22,6 +22,8 @@ class CalList extends StatefulWidget {
 }
 
 class _CalListState extends State<CalList> {
+  static const pageLength = 10;
+
   final db = DBController.getInstance();
   final sc = SelectingController.getInstance();
   final searchc = SearchingController.getInstance();
@@ -70,25 +72,28 @@ class _CalListState extends State<CalList> {
   void dispose() {
     scrollController.dispose();
     searchc.removeListener(_searchListener);
-    db.removeListener(_searchListener);
+    db.removeListener(_dbListener);
     super.dispose();
   }
 
   List<Widget> generateNextPage() {
+    if (isLoading) return [];
     setState(() => isLoading = true);
+
+    var tasksToAdd = <Task>[];
     if (widget.type == CalListType.lastTasks) {
-      tasks.addAll(db.getPastTasks(10, page, search: searchc.query));
+      tasksToAdd = db.getPastTasks(pageLength, page, search: searchc.query);
     } else if (widget.type == CalListType.nextTasks) {
-      tasks.addAll(db.getNextTasks(10, page, search: searchc.query));
+      tasksToAdd = db.getNextTasks(pageLength, page, search: searchc.query);
     }
-    setState(() {
-      page++;
-    });
+    tasks.addAll(tasksToAdd);
+    
     final widgets = <Widget>[];
-    for (var i = 0; i < tasks.length; i++) {
-      if (i == 0 || tasks[i].dateTime.day != tasks[i - 1].dateTime.day) {
+    for (var i = 0; i < tasksToAdd.length; i++) {
+      var cip = page * pageLength + i; // current item position
+      if (i == 0 || tasks[cip].dateTime.day != tasks[cip - 1].dateTime.day) {
         widgets.add(
-            CalItemHeader(date: DateFormat.yMMMMd().format(tasks[i].dateTime)));
+            CalItemHeader(date: DateFormat.yMMMMd().format(tasks[cip].dateTime)));
       }
       widgets.add(
         ListenableBuilder(
@@ -105,6 +110,9 @@ class _CalListState extends State<CalList> {
     }
 
     setState(() => isLoading = false);
+    
+    page++;
+    
     return widgets;
   }
 

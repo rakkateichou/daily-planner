@@ -8,6 +8,7 @@ import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/editing_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
+import 'package:daily_planner/navigator_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +25,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
   late String _timeString;
 
   bool _isEditing = false;
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    NavigatorService.routeObserver.subscribe(this, ModalRoute.of(context)!);
     _lastTaskSaved = Task(
         id: 0,
         content: AppLocalizations.of(context)!.emptyTaskContent,
@@ -65,7 +67,22 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     timer.cancel();
+    NavigatorService.routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    timer.cancel();
+    cc.freezeTime();
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _tick());
+    cc.unfreezeTime();
+    super.didPopNext();
   }
 
   String _formatDateTime(DateTime dateTime) {

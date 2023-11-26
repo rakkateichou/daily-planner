@@ -2,6 +2,7 @@ import 'package:daily_planner/components/task_item.dart';
 import 'package:daily_planner/controllers/database_controller.dart';
 import 'package:daily_planner/controllers/selecting_controller.dart';
 import 'package:daily_planner/models/task.dart';
+import 'package:daily_planner/navigator_service.dart';
 import 'package:daily_planner/styles/text_styles.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class TaskLayout extends StatefulWidget {
   State<TaskLayout> createState() => _TaskLayoutState();
 }
 
-class _TaskLayoutState extends State<TaskLayout> {
+class _TaskLayoutState extends State<TaskLayout> with RouteAware {
   late DBController db;
   late SelectingController sc;
 
@@ -42,9 +43,28 @@ class _TaskLayoutState extends State<TaskLayout> {
   }
 
   @override
+  void didChangeDependencies() {
+    NavigatorService.routeObserver.subscribe(this, ModalRoute.of(context)!);
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
+    NavigatorService.routeObserver.unsubscribe(this);
     db.removeListener(_listener);
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    db.removeListener(_listener);
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    db.addListener(_listener);
+    super.didPopNext();
   }
 
   @override
