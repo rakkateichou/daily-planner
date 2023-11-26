@@ -21,11 +21,7 @@ Made using Flutter
 
 <b>Tracking of progress</b>
 <br/>
-<br/>
 <img src="screenshots/s1.png" alt="Progress tracking" style="margin-right: 20px;" />
-</div>
-<b>Tracking of progress</b>
-<b>Tracking of progress</b>
 <br/>
 
 <b>Managing tasks</b>
