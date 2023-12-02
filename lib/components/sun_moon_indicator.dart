@@ -249,15 +249,14 @@ class CurvePainter extends CustomPainter {
         t * t * endPoint.dy;
 
     var firstTapPositionCheck = isDraggedOrAnimated &&
-                tapPosition.dx / size.width > 0.85 &&
                 firstTapPosition.dx > circleX - 35 &&
                 firstTapPosition.dx < circleX + 35 &&
                 firstTapPosition.dy > circleY - 35 &&
                 firstTapPosition.dy < circleY + 35;
 
     // Check if the indicator is a sun or a moon
-    var indicatorType = (!isDraggedOrAnimated && t >= 0.85 ||
-            firstTapPositionCheck)
+    var indicatorType = (!firstTapPositionCheck && t >= 0.85 ||
+            firstTapPositionCheck && tapPosition.dx / size.width > 0.85)
         ? IndicatorType.moon
         : IndicatorType.sun;
 
