@@ -240,9 +240,24 @@ class CurvePainter extends CustomPainter {
         Offset(circleX2 + 10 - textPainter.width / 2,
             circleY2 - 15 - textPainter.height));
 
+    // Calculate the position of the circle on the curve
+    final circleX = (1 - t) * (1 - t) * startPoint.dx +
+        2 * (1 - t) * t * controlPoint.dx +
+        t * t * endPoint.dx;
+    final circleY = (1 - t) * (1 - t) * startPoint.dy +
+        2 * (1 - t) * t * controlPoint.dy +
+        t * t * endPoint.dy;
+
+    var firstTapPositionCheck = isDraggedOrAnimated &&
+                tapPosition.dx / size.width > 0.85 &&
+                firstTapPosition.dx > circleX - 35 &&
+                firstTapPosition.dx < circleX + 35 &&
+                firstTapPosition.dy > circleY - 35 &&
+                firstTapPosition.dy < circleY + 35;
+
     // Check if the indicator is a sun or a moon
-    var indicatorType = (t >= 0.85 ||
-            (isDraggedOrAnimated && tapPosition.dx / size.width > 0.85))
+    var indicatorType = (!isDraggedOrAnimated && t >= 0.85 ||
+            firstTapPositionCheck)
         ? IndicatorType.moon
         : IndicatorType.sun;
 
@@ -257,20 +272,8 @@ class CurvePainter extends CustomPainter {
     const blurFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
     circlePaint.maskFilter = blurFilter;
 
-    // Calculate the position of the circle on the curve
-    final circleX = (1 - t) * (1 - t) * startPoint.dx +
-        2 * (1 - t) * t * controlPoint.dx +
-        t * t * endPoint.dx;
-    final circleY = (1 - t) * (1 - t) * startPoint.dy +
-        2 * (1 - t) * t * controlPoint.dy +
-        t * t * endPoint.dy;
-
     // Draw the circle on the canvas
-    if (isDraggedOrAnimated &&
-        firstTapPosition.dx > circleX - 35 &&
-        firstTapPosition.dx < circleX + 35 &&
-        firstTapPosition.dy > circleY - 35 &&
-        firstTapPosition.dy < circleY + 35) {
+    if (firstTapPositionCheck) {
       initialIndicatorCallback!(Offset(circleX, circleY));
       canvas.drawCircle(tapPosition, 35.0, circlePaint);
       legitDragCallback!(true);
@@ -303,7 +306,7 @@ class CurvePainter extends CustomPainter {
 
     // Draw moon dots
     if (indicatorType == IndicatorType.moon && moonDotsPI != null) {
-      if (isDraggedOrAnimated) {
+      if (firstTapPositionCheck) {
         canvas.drawImage(moonDotsPI!.picture.toImageSync(50, 50),
             Offset(tapPosition.dx - 20, tapPosition.dy - 20), paint);
       } else {

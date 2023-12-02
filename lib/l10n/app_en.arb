@@ -22,5 +22,6 @@
     "selectedTasks": "{num, plural, =1 {1 item selected} other {{num} items selected}}",
     "deletedTasks": "{num, plural, =1 {1 task deleted} other {{num} tasks deleted}}",
     "hintSearch": "Search",
-    "taskReminder": "Task Reminder"
+    "taskReminder": "Task Reminder",
+    "noTasks": "No tasks"
   }

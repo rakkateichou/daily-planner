@@ -100,42 +100,45 @@ class EditNewPageLayoutState extends State<EditNewPageLayout> {
         widget.popCallback();
         return false;
       },
-      child: Column(
-        children: [
-          SizedBox(
-              height: 575, child: NoteLikeTextField(controller: _controller)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                width: 141,
-                height: 72,
-                child: Text(
-                  AppLocalizations.of(context)!.taskTime,
-                  style: MyTextStyles.taskEditingStyle,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Column(
+          children: [
+            SizedBox(
+                height: 575, child: NoteLikeTextField(controller: _controller)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: 141,
+                  height: 72,
+                  child: Text(
+                    AppLocalizations.of(context)!.taskTime,
+                    style: MyTextStyles.taskEditingStyle,
+                  ),
                 ),
-              ),
-              Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 3),
-                    child: GestureDetector(
-                      onTap: _pickTime,
-                      child: MyPickContainer(text: _timeText),
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 3),
+                      child: GestureDetector(
+                        onTap: _pickTime,
+                        child: MyPickContainer(text: _timeText),
+                      ),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 3),
-                    child: GestureDetector(
-                      onTap: _pickDate,
-                      child: MyPickContainer(text: _dateText),
+                    Container(
+                      margin: const EdgeInsets.only(top: 3),
+                      child: GestureDetector(
+                        onTap: _pickDate,
+                        child: MyPickContainer(text: _dateText),
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          )
-        ],
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

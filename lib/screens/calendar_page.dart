@@ -51,7 +51,7 @@ class _CalendarPageState extends State<CalendarPage> {
         builder: (context, child) => Scaffold(
             appBar: PreferredSize(
                 preferredSize: src.isSearching
-                    ? const Size.fromHeight(112.0)
+                    ? const Size.fromHeight(116.0)
                     : const Size.fromHeight(56.0),
                 child: CalendarAppBar(
                     title: type == CalListType.nextTasks

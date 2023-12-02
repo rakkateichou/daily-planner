@@ -87,13 +87,13 @@ class CalListState extends State<CalList> {
       tasksToAdd = db.getNextTasks(pageLength, page, search: searchc.query);
     }
     tasks.addAll(tasksToAdd);
-    
+
     final widgets = <Widget>[];
     for (var i = 0; i < tasksToAdd.length; i++) {
       var cip = page * pageLength + i; // current item position
       if (i == 0 || tasks[cip].dateTime.day != tasks[cip - 1].dateTime.day) {
-        widgets.add(
-            CalItemHeader(date: DateFormat.yMMMMd().format(tasks[cip].dateTime)));
+        widgets.add(CalItemHeader(
+            date: DateFormat.yMMMMd().format(tasks[cip].dateTime)));
       }
       widgets.add(
         ListenableBuilder(
@@ -110,9 +110,9 @@ class CalListState extends State<CalList> {
     }
 
     setState(() => isLoading = false);
-    
+
     page++;
-    
+
     return widgets;
   }
 
@@ -158,26 +158,43 @@ class CalListState extends State<CalList> {
 
   @override
   Widget build(BuildContext context) {
+    Widget topWidget = const SizedBox(); 
+    if (widgets.isEmpty) {
+      topWidget = Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.calendar_today),
+          const SizedBox(height: 10),
+          Text(AppLocalizations.of(context)!.noTasks),
+        ],
+      ));
+    }
     if (widget.type == CalListType.nextTasks) {
       itemCount = isLoading ? widgets.length + 2 : widgets.length + 1;
     } else if (widget.type == CalListType.lastTasks) {
       itemCount = isLoading ? widgets.length + 1 : widgets.length;
     }
-    return Scrollbar(
-      child: ListView.builder(
-        controller: scrollController,
-        itemCount: itemCount,
-        itemBuilder: (context, index) {
-          if (widget.type == CalListType.nextTasks) {
-            return nextTaskBuilder(context, widgets, index);
-          } else if (widget.type == CalListType.lastTasks) {
-            return lastTaskBuilder(context, widgets, index);
-          } else {
-            // should never happen
-            return const SizedBox();
-          }
-        },
-      ),
+    return Stack(
+      children: [
+        topWidget,
+        Scrollbar(
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: itemCount,
+            itemBuilder: (context, index) {
+              if (widget.type == CalListType.nextTasks) {
+                return nextTaskBuilder(context, widgets, index);
+              } else if (widget.type == CalListType.lastTasks) {
+                return lastTaskBuilder(context, widgets, index);
+              } else {
+                // should never happen
+                return const SizedBox();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }

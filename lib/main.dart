@@ -17,7 +17,6 @@ import 'package:intl/intl_standalone.dart';
 
 import 'screens/home_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -93,7 +92,7 @@ class MyApp extends StatelessWidget {
       ),
       navigatorKey: NavigatorService.navigatorKey,
       theme: ThemeData(
-          fontFamily: GoogleFonts.sofiaSans().fontFamily, useMaterial3: false),
+          fontFamily: "SofiaSans", useMaterial3: false),
     );
   }
 }

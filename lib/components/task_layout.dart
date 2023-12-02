@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class TaskLayout extends StatefulWidget {
   const TaskLayout({Key? key}) : super(key: key);
@@ -21,6 +22,8 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
   late SelectingController sc;
 
   List<Task> tasks = [];
+
+  var noTasksColor = const Color(0x00d9d9d9).withOpacity(0.3);
 
   void _listener() {
     try {
@@ -37,8 +40,7 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
   @override
   void initState() {
     sc = SelectingController.getInstance();
-    db = DBController.getInstance()
-        ..addListener(_listener);
+    db = DBController.getInstance()..addListener(_listener);
     tasks = db.getTasksForToday();
     super.initState();
   }
@@ -111,7 +113,24 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
             },
           ),
         ),
-        if (tasks.isEmpty)
+        if (tasks.isEmpty) ...[
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 150),
+              child: Column(
+                children: [
+                  SvgPicture.asset('assets/cloud.svg',
+                      width: 100,
+                      height: 50,
+                      colorFilter:
+                          ColorFilter.mode(noTasksColor, BlendMode.srcIn)),
+                  Text(AppLocalizations.of(context)!.noTasks,
+                      style: MyTextStyles.addNewTaskStyle
+                          .copyWith(color: noTasksColor))
+                ],
+              ),
+            ),
+          ),
           Positioned(
             bottom: 84,
             child: SizedBox(
@@ -123,6 +142,7 @@ class _TaskLayoutState extends State<TaskLayout> with RouteAware {
               ),
             ),
           )
+        ]
       ],
     );
   }

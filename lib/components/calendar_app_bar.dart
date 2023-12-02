@@ -55,9 +55,9 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
       // search text field
       bottom: shc.isSearching
           ? PreferredSize(
-              preferredSize: const Size.fromHeight(48.0),
+              preferredSize: const Size.fromHeight(56.0),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                 child: TextField(
                   autofocus: true,
                   decoration: InputDecoration(
@@ -74,7 +74,7 @@ class _CalendarAppBarState extends State<CalendarAppBar> {
                       ),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 19),
                   onChanged: (value) {
                     shc.updateQuery(value);
                   },

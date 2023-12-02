@@ -19,6 +19,6 @@
     "selectedTasks": "{num, plural, =1 {Выбрана 1 задача} other {Выбрано {num} задач}}",
     "deletedTasks": "{num, plural, =1 {Удалена 1 задача} other {Удалено {num} задач}}",
     "hintSearch": "Поиск",
-    "taskReminder": "Напоминание"
-    
+    "taskReminder": "Напоминание",
+    "noTasks": "Нет задач"
 }
