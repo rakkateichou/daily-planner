@@ -46,10 +46,13 @@ class DBController extends ChangeNotifier{
     return tasksForDay;
   }
 
-  List<Task> getTasksForIndicator(DateTime day) {
-    var morning = DateTime(day.year, day.month, day.day, 5);
+  List<Task> getTasksForIndicator(DateTime time) {
+    if (time.hour < 5) {
+      time = time.subtract(const Duration(days: 1));
+    }
+    var morning = DateTime(time.year, time.month, time.day, 5);
     var tommorow =
-        DateTime(day.year, day.month, day.day, 5).add(const Duration(days: 1));
+        DateTime(time.year, time.month, time.day, 5).add(const Duration(days: 1));
     // today from 5 am and tommorow till 5 am
     var tasksForToday = box.values.where((element) {
       return element.dateTime.isAfter(morning) &&

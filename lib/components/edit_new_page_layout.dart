@@ -101,7 +101,7 @@ class EditNewPageLayoutState extends State<EditNewPageLayout> {
         return false;
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 6),
         child: Column(
           children: [
             SizedBox(
@@ -158,7 +158,7 @@ class MyPickContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
       decoration: const BoxDecoration(color: Color(0xCCF2F2F3)),
       child: SizedBox(
-        width: 200,
+        width: 190,
         height: 25,
         child: Text(
           pickedText,

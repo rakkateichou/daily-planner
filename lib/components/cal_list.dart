@@ -25,7 +25,7 @@ class CalListState extends State<CalList> {
   static const pageLength = 10;
 
   final db = DBController.getInstance();
-  final sc = SelectingController.getInstance();
+  final selectc = SelectingController.getInstance();
   final searchc = SearchingController.getInstance();
 
   late ScrollController scrollController;
@@ -97,13 +97,13 @@ class CalListState extends State<CalList> {
       }
       widgets.add(
         ListenableBuilder(
-          listenable: sc,
+          listenable: selectc,
           builder: (context, child) => TaskItem(
             task: tasks[i],
             calendarStyle: true,
-            isSelected: sc.checkSelected(tasks[i]),
-            onTap: () => sc.onTap(tasks[i]),
-            onLongPress: () => sc.onLongPress(tasks[i]),
+            isSelected: selectc.checkSelected(tasks[i]),
+            onTap: () => selectc.onTap(tasks[i]),
+            onLongPress: () => selectc.onLongPress(tasks[i]),
           ),
         ),
       );
@@ -166,7 +166,10 @@ class CalListState extends State<CalList> {
         children: [
           const Icon(Icons.calendar_today),
           const SizedBox(height: 10),
-          Text(AppLocalizations.of(context)!.noTasks),
+          if (searchc.isSearching)
+            Text(AppLocalizations.of(context)!.noTasksFound)
+          else
+            Text(AppLocalizations.of(context)!.noTasks),
         ],
       ));
     }
